@@ -2,7 +2,7 @@ from typing import Dict, Any
 from dataclasses import dataclass, field
 
 @dataclass
-class StockData:
+class StockFormat:
     ticker: str
     volume: int
     avg_volume: int
@@ -24,7 +24,7 @@ class StockData:
 
 class StockAnalyzer:
     @staticmethod
-    def analyze_stock(stock: StockData) -> Dict[str, Any]:
+    def analyze_stock(stock: StockFormat) -> Dict[str, Any]:
         analysis = {}
         potential_score = 0
 
@@ -129,7 +129,7 @@ class StockAnalyzer:
         return 'No dividend', 0
 
     @staticmethod
-    def _analyze_financial_health(stock: StockData) -> Dict[str, Any]:
+    def _analyze_financial_health(stock: StockFormat) -> Dict[str, Any]:
         analysis = {}
         score = 0
 
