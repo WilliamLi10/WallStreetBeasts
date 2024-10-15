@@ -1,6 +1,6 @@
 from typing import Dict, Any
 from dataclasses import dataclass
-
+#https://github.com/ranaroussi/yfinance - finance data
 @dataclass
 class StockData:
     ticker: str
