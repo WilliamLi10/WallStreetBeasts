@@ -39,7 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'WSBapp',
+    'rest_framework.authtoken',
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,14 +83,43 @@ WSGI_APPLICATION = 'WallStreetBeasts.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+'''
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+
+
+    'CLIENT': {
+            'host': 'mongodb://localhost:27017/',
+        },
+'''
+
+DATABASES = {
+    
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'wsbdb',
+    }
 }
 
+'''
+print("Database settings:")
+print(f"ENGINE: {DATABASES['default']['ENGINE']}")
+print(f"NAME: {DATABASES['default']['NAME']}")
+print(f"CLIENT HOST: {DATABASES['default']['CLIENT']['host']}")
 
+from django.db import connections
+
+try:
+    connection = connections['default']
+    connection.ensure_connection()  # This will try to connect to the database
+    print("Successfully connected to the database.")
+except Exception as e:
+    print("Failed to connect to the database.")
+    print(f"Error: {e}")
+'''
+    
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
