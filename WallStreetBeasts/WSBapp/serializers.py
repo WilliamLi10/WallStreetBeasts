@@ -13,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             pass1 = data['password']
             email = data['email']
             phone = data['phone_number']
+            user_email_validated = 0
 
             user = CustomUser(username=user, email=email, phone_number=phone)
             user.set_password(pass1)
