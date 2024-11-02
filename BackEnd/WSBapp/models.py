@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import random
 
 # Create your models here.
 
@@ -35,7 +34,7 @@ class CustomUser(AbstractUser):
         1 = Validated
     '''
     user_email_validated = models.IntegerField(default=0)
-    user_validation_code = models.BigIntegerField(default=random.randint(100000001, 999999998))
+    user_validation_code = models.BigIntegerField()
 
     groups = models.ManyToManyField(
         'auth.Group',
