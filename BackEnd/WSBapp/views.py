@@ -9,8 +9,8 @@ from .serializers import UserSerializer
 from django.core.mail import send_mail
 import random
 from django.conf import settings
-from StockRecommendationManager import PortfolioAnalyzer, AnalyzedStock
-from models import CustomUser
+from .StockRecommendationManager import PortfolioAnalyzer
+from .models import CustomUser
 
 # Create your views here.
 @api_view(['GET'])
@@ -76,7 +76,7 @@ def verify_email_view(request):
     return Response({'error':'User was not able to be validated'}, status = 400)
 
 @api_view(['POST'])
-def request_new_code(request):
+def request_new_code_view(request):
     email = request.data.get('email').strip()
     user = CustomUser.objects.filter(email=email).first()
 
@@ -88,7 +88,7 @@ def request_new_code(request):
 
     send_mail(
         subject='WallStreetBeasts Email Verification',
-        message=("Hello "+user.username+", your code is "+str(code)+" please enter this code into the website to be able to validate your account!"),
+        message=("Hello "+user.username+", your code is "+str(user.user_validation_code)+" please enter this code into the website to be able to validate your account!"),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
         fail_silently=False
