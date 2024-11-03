@@ -11,6 +11,7 @@ import random
 from django.conf import settings
 from .StockRecommendationManager import PortfolioAnalyzer
 from .models import CustomUser
+from django.conf import settings
 
 # Create your views here.
 @api_view(['GET'])
@@ -21,6 +22,8 @@ def landing_page(request):
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
+    print(username)
+    print(password)
 
     is_valid = None
     if "@" in username:
@@ -31,11 +34,13 @@ def login_view(request):
     if is_valid is None:
         return Response({'error':'Wrong'}, status=400)
     else:
-        token = Token.objects.get_or_create(user=is_valid)
+        token, created = Token.objects.get_or_create(user=is_valid)
         return Response({'token':token.key}, status=200)
 
 @api_view(['POST'])    
 def registration_view(request):
+    print(settings.EMAIL_HOST_USER)
+    print(settings.EMAIL_HOST_PASSWORD)
     serializer = UserSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=400)
@@ -57,13 +62,16 @@ def registration_view(request):
     
 @api_view(['POST'])
 def logout_view(request):
-    request.user.auth_token.delete()
-    return Response({'message':'Logged Out'}, status=200)
+    user = CustomUser.objects.filter(auth_token=request.auth).first()
+    if user.is_authenticated:
+        user.auth_token.delete()
+        return Response({'message': 'Logged Out'}, status=200)
+    else:
+        return Response({'error': 'User not logged in'}, status=401)
 
 @api_view(['POST'])
 def verify_email_view(request):
-    email = request.data.get('email').strip()
-    user = CustomUser.objects.filter(email=email).first()
+    user = CustomUser.objects.filter(auth_token=request.auth).first()
     input_code = int(request.data.get('user_validation_code'))
     actual_code = user.user_validation_code
 
@@ -77,8 +85,7 @@ def verify_email_view(request):
 
 @api_view(['POST'])
 def request_new_code_view(request):
-    email = request.data.get('email').strip()
-    user = CustomUser.objects.filter(email=email).first()
+    user = CustomUser.objects.filter(auth_token=request.auth).first()
 
     if user.user_email_validated == 1:
         return Response({'error':'This is a validated user'}, status = 400)
@@ -95,3 +102,32 @@ def request_new_code_view(request):
     )
 
     return Response({'message':'Code Regenerated and Email Resent'}, status = 200)
+
+@api_view(['POST'])
+def stocks_data_view(request):
+    tickers = request.data.get('tickers')
+    stock_data = PortfolioAnalyzer().analyze_stocks(tickers)
+    stock_data = make_analyzed_stock_json(stock_data)
+    return Response(stock_data, status=200)
+
+def make_analyzed_stock_json(stock_data):
+    options = list(stock_data.keys())
+    Analyzed_stock_classes = list()
+    for option in options:
+        for stock in stock_data[option]:
+            Analyzed_stock_classes.append(stock)
+    super_final_dict = dict()
+    for Analyzed_stock_class in Analyzed_stock_classes:
+        final_dict = dict()
+        recommendation = Analyzed_stock_class.recommendation
+        ticker = Analyzed_stock_class.ticker
+        score = Analyzed_stock_class.score
+        final_dict["ticker"] = ticker
+        final_dict["recommendation"] = recommendation
+        final_dict["score"] = score
+        analysis = Analyzed_stock_class.analysis
+        for k, v in analysis.items():
+            final_dict[k] = v
+        print(final_dict)
+        super_final_dict[ticker] = final_dict
+    return json.dumps(super_final_dict)

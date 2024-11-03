@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
-import os
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
 load_dotenv('email.env')
 
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'WSBapp',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 
@@ -61,9 +64,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'WallStreetBeasts.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+]
 
 TEMPLATES = [
     {
@@ -127,6 +135,9 @@ except Exception as e:
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
+AUTH_USER_MODEL = 'WSBapp.CustomUser'
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -140,6 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
 ]
 
 
@@ -169,5 +181,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL')
-EMAIL_HOST_PASSWORD = os.getenv('PASSWORD')
+EMAIL_HOST_USER = env('EMAIL')
+EMAIL_HOST_PASSWORD = env('PASSWORD')
