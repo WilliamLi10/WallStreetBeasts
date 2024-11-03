@@ -10,6 +10,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout_view'),
     path("verify_email/", views.verify_email_view, name='verify_email_view'),
     path('request_new_code/', views.request_new_code_view, name='request_new_code_view'),
-    
+    path('stocks/', views.stocks_data_view, name='stocks_data_view'),
 ]
 
