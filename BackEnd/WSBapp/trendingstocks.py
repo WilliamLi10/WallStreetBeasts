@@ -98,15 +98,3 @@ class StockAnalyzer:
 
         for i, (ticker, volume) in enumerate(most_traded, 1):
             print(f"{i:<6}{ticker:<10}{volume:,}<15")
-
-
-# Example usage:
-if __name__ == "__main__":
-    # Initialize the analyzer
-    analyzer = StockAnalyzer('stock_info.csv')
-
-    # Load data for all stocks
-    analyzer.load_stock_data()
-
-    # Print the 10 most traded stocks
-    analyzer.print_most_traded_stocks(10)
