@@ -2,7 +2,7 @@ import React from "react";
 import logo from "../resources/logo.jpg";
 const CustomFooter = () => {
   return (
-    <footer className="fixed bottom-0 left-0 z-20 w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
+    <footer className="w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
       <a
         href="localhost:3000"
         className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
