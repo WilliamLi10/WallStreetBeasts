@@ -1,4 +1,3 @@
-// SearchBar.js
 import React, { useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 
@@ -15,6 +14,7 @@ const mockData = [
   { name: 'Analog Devices, Inc.', ticker: 'ADI' },
   { name: 'Airbnb, Inc.', ticker: 'ABNB' },
 ];
+
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -64,24 +64,29 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="relative w-full max-w-xs">
-      <input
-        type="text"
-        value={query}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Search companies or tickers..."
-        className="w-full p-2 rounded text-black"
-      />
-      {autocompleteEnabled && suggestions.length > 0 && (
-        <ul className="absolute z-10 w-full bg-white border rounded shadow">
-          {suggestions.map((item, index) => (
-            <li key={index} className="p-2 hover:bg-gray-100 cursor-pointer text-black">
-              {item.name} ({item.ticker})
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="flex items-center space-x-4">
+      {/* Search Input */}
+      <div className="relative w-full max-w-xs">
+        <input
+          type="text"
+          value={query}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Search companies or tickers..."
+          className="w-full p-2 rounded text-black"
+        />
+        {autocompleteEnabled && suggestions.length > 0 && (
+          <ul className="absolute z-10 w-full bg-white border rounded shadow">
+            {suggestions.map((item, index) => (
+              <li key={index} className="p-2 hover:bg-gray-100 cursor-pointer text-black">
+                {item.name} ({item.ticker})
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+  
     </div>
   );
 };
