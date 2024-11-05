@@ -4,7 +4,7 @@ const CustomFooter = () => {
   return (
     <footer className="w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
       <a
-        href="localhost:3000"
+        href="/"
         className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
       >
         <img src={logo} className="h-8" alt="Our Logo" />

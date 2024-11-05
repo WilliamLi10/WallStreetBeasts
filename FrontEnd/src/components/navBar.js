@@ -7,7 +7,7 @@ const NavBar = ({RightComponent}) => {
         <a href="#" className="text-white hover:text-gray-300 transition">
           Financial News
         </a>
-        <a href="#" className="text-white hover:text-gray-300 transition">
+        <a href="/stocks" className="text-white hover:text-gray-300 transition">
           Investment Insights
         </a>
         <a href="#" className="text-white hover:text-gray-300 transition">
