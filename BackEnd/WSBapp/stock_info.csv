@@ -530,7 +530,6 @@ FR,First Industrial Realty Trust,NYSE
 FRA,Blackrock Floating Rate Income Fund,NYSE
 FRO,Frontline Ltd,NYSE
 FRT,Federal Realty Investment Trust,NYSE
-FSM,Fortuna Silver Mines,NYSE
 FSS,Federal Signal Corp.,NYSE
 FT,Franklin Universal Trust,NYSE
 FTI,Fmc Technologies,NYSE
@@ -685,7 +684,6 @@ IMAX,Imax Corp.,NYSE
 INFY,Infosys Limited,NYSE
 ING,ING Group N.V.,NYSE
 INGR,Ingredion Inc,NYSE
-INN,Summit Hotel Properties,NYSE
 IP,International Paper Company,NYSE
 IPG,Interpublic Group Of Companies,NYSE
 IPI,Intrepid Potash Inc,NYSE
@@ -735,7 +733,6 @@ KBR,Kbr,NYSE
 KEM,Kemet Corp.,NYSE
 KEP,Korea Electric Power Corp.,NYSE
 KEX,Kirby Corp.,NYSE
-KEY,Keycorp,NYSE
 KF,Korea Fund,NYSE
 KFS,Kingsway Financial Services,NYSE
 KFY,Korn/Ferry International,NYSE
@@ -838,7 +835,6 @@ MFG,Mizuho Financial Group,NYSE
 MFM,Mfs Muni Income Trust,NYSE
 MG,Mistras Group Inc,NYSE
 MGA,Magna International,NYSE
-MGF,Mfs Government Markets Income Trust,NYSE
 MGM,Mgm Resorts International,NYSE
 MGR,Affiliated Managers Group Inc,NYSE
 MHD,Blackrock Muniholdings Fund,NYSE
@@ -1005,14 +1001,7 @@ OFG,Oriental Financial Group,NYSE
 OGE,Oge Energy Corp.,NYSE
 OHI,Omega Healthcare Investors,NYSE
 OI,Owens-Illinois,NYSE
-OIA,Invesco Muni Income Trust,NYSE
-OII,Oceaneering International,NYSE
-OILT,Oiltanking Partners L.P.,NYSE
-OIS,Oil States International,NYSE
-OKE,Oneok,NYSE
-OLN,Olin Corp.,NYSE
 OLP,One Liberty Properties,NYSE
-OMC,Omnicom Group Inc.,NYSE
 OMI,Owens & Minor,NYSE
 ONB,Old National Bancorp Capital,NYSE
 OPK,Opko Health Inc,NYSE
@@ -1482,7 +1471,6 @@ AMSWA,American Software,NASDAQ
 AMWD,American Woodmark Corp.,NASDAQ
 AMZN,Amazon.Com,NASDAQ
 ANDE,The Andersons,NASDAQ
-ANGI,Angie's List Inc.,NASDAQ
 ANGO,Angiodynamics,NASDAQ
 ANIK,Anika Therapeutics Inc.,NASDAQ
 ANIP,Ani Pharmaceuticals Inc.,NASDAQ
@@ -1581,7 +1569,6 @@ BRID,Bridgford Foods Corp.,NASDAQ
 BRKL,Brookline Bancorp,NASDAQ
 BRKR,Bruker Corp.,NASDAQ
 BSET,Bassett Furniture Industries Inc.,NASDAQ
-BSPM,Biostar Pharmaceuticals,NASDAQ
 BSRR,Sierra Bancorp,NASDAQ
 BUR,Burcon Nutrascience,NASDAQ
 BUSE,First Busey Corp.,NASDAQ
@@ -1824,16 +1811,6 @@ EZPW,Ezcorp,NASDAQ
 FALC,Falconstor Software,NASDAQ
 FANG,Diamondback Energy Inc.,NASDAQ
 FARM,Farmer Brothers Company,NASDAQ
-FARO,Faro Technologies,NASDAQ
-FAST,Fastenal Company,NASDAQ
-FBIZ,First Business Financial Services,NASDAQ
-FBMS,The First Bancshares,NASDAQ
-FBNC,First Bancorp,NASDAQ
-FCAP,First Capital,NASDAQ
-FCBC,First Community Bancshares,NASDAQ
-FCCO,First Community Corp.,NASDAQ
-FCEL,Fuelcell Energy,NASDAQ
-FCFS,First Cash Financial Services,NASDAQ
 FCNCA,First Citizens Bancshares,NASDAQ
 FDUS,Fidus Investment Corporation,NASDAQ
 FEIM,Frequency Electronics,NASDAQ
@@ -2381,7 +2358,6 @@ PXLW,Pixelworks,NASDAQ
 PZZA,Papa John's International,NASDAQ
 QABA,Nasdaq Aba Community Bank First Trust,NASDAQ
 QBAK,Qualstar Corp.,NASDAQ
-QCCO,Qc Holdings,NASDAQ
 QCLN,Nasdaq Clean Edge Green First Trust,NASDAQ
 QCOM,Qualcomm Inc.,NASDAQ
 QCRH,Qcr Holdings,NASDAQ
