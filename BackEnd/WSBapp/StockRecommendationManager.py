@@ -3,9 +3,9 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from time import sleep
-from .stock_analyzer import StockAnalyzer, StockFormat
-from .StockData import StockData
-
+from stock_analyzer import StockAnalyzer,StockFormat
+from StockData import StockData
+import csv
 
 @dataclass
 class AnalyzedStock:
@@ -14,7 +14,6 @@ class AnalyzedStock:
     score: int
     analysis: Dict
     error: Optional[str] = None
-
 
 class PortfolioAnalyzer:
     def __init__(self, max_workers: int = 5, retry_attempts: int = 3, delay_between_calls: float = 0.2):
@@ -127,3 +126,17 @@ class PortfolioAnalyzer:
                 summary.append("")
 
         return "\n".join(summary)
+if __name__ == "__main__":
+    # Load tickers from stock_info.csv
+    tickers = []
+    with open('stock_info.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            tickers.append(row['Ticker'])
+
+    # Analyze the stocks
+    analyzer = PortfolioAnalyzer()
+    analyzed_stocks = analyzer.analyze_stocks(tickers)
+    summary = analyzer.get_summary(analyzed_stocks)
+
+    print(summary)

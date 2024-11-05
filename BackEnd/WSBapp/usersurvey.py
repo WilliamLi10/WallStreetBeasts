@@ -96,7 +96,5 @@ def investment_risk_questionnaire():
         risk_profile = "Moderate Investor"
     else:
         risk_profile = "Aggressive Investor"
-
-    print(f"\nYour total score is: {score}")
-    print(f"Your risk profile is: {risk_profile}")
+    return risk_profile
 

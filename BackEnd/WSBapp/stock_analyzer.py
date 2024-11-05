@@ -1,5 +1,8 @@
+from dataclasses import dataclass
 from typing import Dict, Any
-from dataclasses import dataclass, field
+
+from BackEnd.WSBapp.StockData import StockData
+
 
 @dataclass
 class StockFormat:
@@ -24,7 +27,28 @@ class StockFormat:
 
 class StockAnalyzer:
     @staticmethod
-    def analyze_stock(stock: StockFormat) -> Dict[str, Any]:
+    def analyze_stock(ticker: str) -> Dict[str, Any]:
+        stock_data = StockData(ticker)
+        stock_format = StockFormat(
+            ticker=ticker,
+            volume=stock_data.volume,
+            avg_volume=stock_data.avg_volume,
+            pe_ratio=stock_data.pe_ratio,
+            industry_pe_ratio=stock_data.industry_pe_ratio,
+            target_est_1y=stock_data.target_est_1y,
+            eps=stock_data.eps,
+            dividend_yield=stock_data.dividend_yield,
+            debt_to_equity=stock_data.debt_to_equity,
+            current_ratio=stock_data.current_ratio,
+            price_to_book=stock_data.price_to_book,
+            return_on_equity=stock_data.return_on_equity,
+            free_cash_flow=stock_data.free_cash_flow,
+            beta=stock_data.beta
+        )
+        return StockAnalyzer.analyze_stock_format(stock_format)
+
+    @staticmethod
+    def analyze_stock_format(stock: StockFormat) -> Dict[str, Any]:
         analysis = {}
         potential_score = 0
 
@@ -67,6 +91,7 @@ class StockAnalyzer:
         analysis['potential_score'] = potential_score
 
         return analysis
+
 
     @staticmethod
     def _categorize_volume(ratio: float) -> str:
@@ -215,3 +240,6 @@ class StockAnalyzer:
         elif score <= -2:
             return 'Sell'
         return 'Hold'
+if __name__ == "__main__":
+    analysis = StockAnalyzer.analyze_stock('AAPL')
+    print(analysis['recommendation'])
