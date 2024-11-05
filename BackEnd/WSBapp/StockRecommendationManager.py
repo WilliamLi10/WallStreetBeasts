@@ -3,8 +3,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from time import sleep
-from stock_analyzer import StockAnalyzer,StockFormat
-from StockData import StockData
+from stock_analyzer import StockAnalyzer
 import csv
 
 @dataclass
@@ -34,29 +33,10 @@ class PortfolioAnalyzer:
         for attempt in range(self.retry_attempts):
             try:
                 # Get stock data
-                stock_data = StockData(ticker)
-                metrics = stock_data.get_everything()
 
-                # Convert to StockFormat
-                stock = StockFormat(
-                    ticker=ticker,
-                    volume=metrics[0],
-                    avg_volume=metrics[1],
-                    pe_ratio=metrics[2],
-                    industry_pe_ratio=metrics[3],
-                    target_est_1y=metrics[4],
-                    eps=metrics[5],
-                    dividend_yield=metrics[6],
-                    debt_to_equity=metrics[7],
-                    current_ratio=metrics[8],
-                    price_to_book=metrics[9],
-                    return_on_equity=metrics[10],
-                    free_cash_flow=metrics[11],
-                    beta=metrics[12]
-                )
 
                 # Analyze the stock
-                analysis = StockAnalyzer.analyze_stock(stock)
+                analysis = StockAnalyzer.analyze_stock(ticker)
 
                 return AnalyzedStock(
                     ticker=ticker,
@@ -94,10 +74,10 @@ class PortfolioAnalyzer:
                 executor.submit(self._analyze_single_stock, ticker): ticker
                 for ticker in tickers
             }
-
             # Process results as they complete
             for future in as_completed(future_to_ticker):
                 result = future.result()
+
                 categorized_stocks[result.recommendation].append(result)
                 sleep(self.delay_between_calls)  # Rate limiting
 
