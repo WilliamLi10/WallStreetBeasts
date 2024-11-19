@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const LOGIN_URL = 'wsb-api/login/';
 
 const Login = () => {
   const [email, setEmail] = useState('');
