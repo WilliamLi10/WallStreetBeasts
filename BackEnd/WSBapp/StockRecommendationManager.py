@@ -20,20 +20,27 @@ class PortfolioAnalyzer:
         Initialize the PortfolioAnalyzer.
 
         Args:
-            max_workers: Maximum number of concurrent threads for stock analysis
-            retry_attempts: Number of times to retry failed API calls
-            delay_between_calls: Delay between API calls to avoid rate limiting
+            max_workers (int): Maximum number of concurrent threads for stock analysis.
+            retry_attempts (int): Number of times to retry failed API calls.
+            delay_between_calls (float): Delay between API calls to avoid rate limiting.
         """
         self.max_workers = max_workers
         self.retry_attempts = retry_attempts
         self.delay_between_calls = delay_between_calls
 
     def _analyze_single_stock(self, ticker: str) -> AnalyzedStock:
-        """Analyze a single stock with retry logic."""
+        """
+        Analyze a single stock with retry logic.
+
+        Args:
+            ticker (str): The ticker symbol of the stock to analyze.
+
+        Returns:
+            AnalyzedStock: An object containing the analysis results for the stock.
+        """
         for attempt in range(self.retry_attempts):
             try:
                 # Get stock data
-
 
                 # Analyze the stock
                 analysis = StockAnalyzer.analyze_stock(ticker)
@@ -61,10 +68,10 @@ class PortfolioAnalyzer:
         Analyze multiple stocks and categorize them by recommendation.
 
         Args:
-            tickers: List of stock tickers to analyze
+            tickers (List[str]): List of stock tickers to analyze.
 
         Returns:
-            Dict mapping recommendation categories to lists of analyzed stocks
+            Dict[str, List[AnalyzedStock]]: A dictionary mapping recommendation categories to lists of analyzed stocks.
         """
         categorized_stocks = defaultdict(list)
 
@@ -88,7 +95,15 @@ class PortfolioAnalyzer:
         return dict(categorized_stocks)
 
     def get_summary(self, analyzed_stocks: Dict[str, List[AnalyzedStock]]) -> str:
-        """Generate a summary of the analysis results."""
+        """
+        Generate a summary of the analysis results.
+
+        Args:
+            analyzed_stocks (Dict[str, List[AnalyzedStock]]): A dictionary of analyzed stocks categorized by recommendation.
+
+        Returns:
+            str: A summary of the analysis results.
+        """
         summary = []
         summary.append("=== Stock Analysis Summary ===\n")
 

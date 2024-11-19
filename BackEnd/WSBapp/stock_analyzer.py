@@ -23,11 +23,26 @@ class StockFormat:
 
     @property
     def current_price(self) -> float:
+        """
+        Calculate the current price of the stock.
+
+        Returns:
+            float: The current price of the stock.
+        """
         return self.pe_ratio * self.eps
 
 class StockAnalyzer:
     @staticmethod
     def analyze_stock(ticker: str) -> Dict[str, Any]:
+        """
+        Analyze a stock based on its ticker symbol.
+
+        Args:
+            ticker (str): The ticker symbol of the stock.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the analysis results.
+        """
         stock_data = StockData(ticker)
         stock_format = StockFormat(
             ticker=ticker,
@@ -49,6 +64,15 @@ class StockAnalyzer:
 
     @staticmethod
     def analyze_stock_format(stock: StockFormat) -> Dict[str, Any]:
+        """
+        Analyze a stock based on its formatted data.
+
+        Args:
+            stock (StockFormat): The formatted stock data.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the analysis results.
+        """
         analysis = {}
         potential_score = 0
 
@@ -92,9 +116,17 @@ class StockAnalyzer:
 
         return analysis
 
-
     @staticmethod
     def _categorize_volume(ratio: float) -> str:
+        """
+        Categorize the volume ratio.
+
+        Args:
+            ratio (float): The volume ratio.
+
+        Returns:
+            str: The volume status.
+        """
         if ratio > 1.5:
             return 'High'
         elif ratio < 0.5:
@@ -103,6 +135,15 @@ class StockAnalyzer:
 
     @staticmethod
     def _score_volume(ratio: float) -> int:
+        """
+        Score the volume ratio.
+
+        Args:
+            ratio (float): The volume ratio.
+
+        Returns:
+            int: The volume score.
+        """
         if ratio > 2:
             return 1
         elif ratio < 0.3:
@@ -111,6 +152,16 @@ class StockAnalyzer:
 
     @staticmethod
     def _analyze_pe_ratio(pe_ratio: float, industry_pe_ratio: float) -> tuple[str, int]:
+        """
+        Analyze the PE ratio.
+
+        Args:
+            pe_ratio (float): The PE ratio of the stock.
+            industry_pe_ratio (float): The industry PE ratio.
+
+        Returns:
+            tuple[str, int]: The PE status and score.
+        """
         if pe_ratio <= 0:
             return 'Negative (Caution)', -2
         elif pe_ratio < industry_pe_ratio * 0.7:
@@ -125,6 +176,15 @@ class StockAnalyzer:
 
     @staticmethod
     def _score_growth_potential(growth_potential: float) -> int:
+        """
+        Score the growth potential.
+
+        Args:
+            growth_potential (float): The growth potential.
+
+        Returns:
+            int: The growth potential score.
+        """
         if growth_potential > 30:
             return 4
         elif growth_potential > 20:
@@ -143,6 +203,15 @@ class StockAnalyzer:
 
     @staticmethod
     def _analyze_dividend(dividend_yield: float) -> tuple[str, int]:
+        """
+        Analyze the dividend yield.
+
+        Args:
+            dividend_yield (float): The dividend yield.
+
+        Returns:
+            tuple[str, int]: The dividend status and score.
+        """
         if dividend_yield > 5:
             return 'Very High', 2
         elif dividend_yield > 3:
@@ -155,6 +224,15 @@ class StockAnalyzer:
 
     @staticmethod
     def _analyze_financial_health(stock: StockFormat) -> Dict[str, Any]:
+        """
+        Analyze the financial health of the stock.
+
+        Args:
+            stock (StockFormat): The formatted stock data.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the financial health analysis.
+        """
         analysis = {}
         score = 0
 
@@ -223,6 +301,15 @@ class StockAnalyzer:
 
     @staticmethod
     def _categorize_volatility(beta: float) -> str:
+        """
+        Categorize the volatility based on the beta value.
+
+        Args:
+            beta (float): The beta value.
+
+        Returns:
+            str: The volatility status.
+        """
         if beta < 0.8:
             return 'Low'
         elif beta < 1.2:
@@ -231,6 +318,15 @@ class StockAnalyzer:
 
     @staticmethod
     def _get_recommendation(score: int) -> str:
+        """
+        Get the recommendation based on the potential score.
+
+        Args:
+            score (int): The potential score.
+
+        Returns:
+            str: The recommendation.
+        """
         if score >= 6:
             return 'Strong Buy'
         elif score >= 3:
@@ -240,6 +336,3 @@ class StockAnalyzer:
         elif score <= -2:
             return 'Sell'
         return 'Hold'
-if __name__ == "__main__":
-    analysis = StockAnalyzer.analyze_stock('AAPL')
-    print(analysis['recommendation'])
