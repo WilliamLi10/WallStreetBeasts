@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const SIGNUP_URL = 'wsb-api/register/';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
