@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 from stock_analyzer import StockAnalyzer,StockFormat
 from StockData import StockData
+import time
 
 
 class StockAnalyzer:
@@ -49,11 +50,17 @@ class StockAnalyzer:
             max_workers (int): Maximum number of parallel workers
         """
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            results = list(tqdm(
-                executor.map(self._process_ticker, self.tickers),
-                total=len(self.tickers),
-                desc="Loading stock data"
-            ))
+            results = []
+            request_count = 0
+            for result in tqdm(
+                    executor.map(self._process_ticker, self.tickers),
+                    total=len(self.tickers),
+                    desc="Loading stock data"
+            ):
+                results.append(result)
+                request_count += 1
+                if request_count % 5 == 0:
+                    time.sleep(1)  # Add a one-second break after every 5 requests
 
         self.stock_data = {
             ticker: data for ticker, data in results
@@ -81,25 +88,13 @@ class StockAnalyzer:
         return [(ticker, stock.volume)
                 for ticker, stock in sorted_stocks[:n]
                 if stock is not None]
-
-    def print_most_traded_stocks(self, n: int = 10) -> None:
-        """
-        Print the n most traded stocks in a formatted way.
-
-        Args:
-            n (int): Number of stocks to print
-        """
-        most_traded = self.get_most_traded_stocks(n)
-
-        print(f"\nTop {n} Most Traded Stocks:")
-        print("-" * 50)
-        print(f"{'Rank':<6}{'Ticker':<10}{'Volume':<15}")
-        print("-" * 50)
-
-        for i, (ticker, volume) in enumerate(most_traded, 1):
-            print(f"{i:<6}{ticker:<10}{volume:,}<15")
-if __name__ == "__main__":
-    csv_file = "stock_info.csv"  # replace with your actual CSV file path
+def main():
+    csv_file = 'stock_info.csv'
     analyzer = StockAnalyzer(csv_file)
     analyzer.load_stock_data()
-    analyzer.print_most_traded_stocks(10)
+    most_traded_stocks = analyzer.get_most_traded_stocks(10)
+    for ticker, volume in most_traded_stocks:
+        print(f"{ticker}: {volume}")
+
+if __name__ == "__main__":
+    main()
