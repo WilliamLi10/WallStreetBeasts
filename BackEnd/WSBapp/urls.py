@@ -11,5 +11,8 @@ urlpatterns = [
     path("verify_email/", views.verify_email_view, name='verify_email_view'),
     path('request_new_code/', views.request_new_code_view, name='request_new_code_view'),
     path('stocks/', views.stocks_data_view, name='stocks_data_view'),
+    path('portfolio/', views.get_portfolio_view, name='get_portfolio_view'),
+    path('edit_portfolio/', views.edit_portfolio_view, name='edit_portfolio_view'),
+    path('reset_password/', views.reset_password_view, name='reset_password_view'),
 ]
 

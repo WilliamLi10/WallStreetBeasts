@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Any
 
-from BackEnd.WSBapp.StockData import StockData
+from .StockData import StockData
 
 
 @dataclass
