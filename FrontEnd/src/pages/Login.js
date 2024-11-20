@@ -10,16 +10,18 @@ const Login = () => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({username: email, password: password})
+    body: JSON.stringify({email: email, password: password})
     // need to store login code in cookie named token
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('wsb-api/login/', requestOptions)
+    console.log('Request options:', requestOptions);
+    fetch('http://localhost:8000/wsb-api/login/', requestOptions)
       .then(response => {
       if (response.ok) {
         // Parse the JSON response
+        console.log("There was a response", response);
         return response.json();
       } else {
         throw new Error('Network response was not ok');

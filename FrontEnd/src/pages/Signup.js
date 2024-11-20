@@ -18,9 +18,10 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('wsb-api/register/', requestOptions)
+    fetch('http://localhost:8000/wsb-api/register/', requestOptions)
       .then(response => {
       if (response.ok) {
+        console.log("There was a response", response);
         return response.json();
       } else {
         throw new Error('Network response was not ok');

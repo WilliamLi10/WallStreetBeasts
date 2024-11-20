@@ -27,6 +27,7 @@ def landing_page(request):
 
 @api_view(['POST'])
 def login_view(request):
+    print(request.data)
     username = request.data.get('username')
     password = request.data.get('password')
     email = request.data.get('email')
@@ -39,6 +40,8 @@ def login_view(request):
         user = users.find_one({'email': email})
         username = user['username']
 
+    print(username)
+
     client = MongoClient('localhost', 27017)
     database = client['wsbdb']
     users = database['WSBapp_customuser']
@@ -46,6 +49,8 @@ def login_view(request):
     hashed_password = user['password']
 
     is_valid = check_password(password, hashed_password)
+
+    print(is_valid)
 
     if not is_valid:
         return Response({'error':'Wrong'}, status=400)
