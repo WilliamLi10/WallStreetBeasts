@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
         Weekly = 1
     '''
     newsletter_freq = models.IntegerField(default=1)
-    phone_number = models.CharField(max_length=10, blank=True, null=True)
+    phone_number = models.CharField(max_length=10, blank=True, null=True, default='')
 
     #age = models.IntegerField(default=40)
 
@@ -34,7 +34,7 @@ class CustomUser(AbstractUser):
         1 = Validated
     '''
     user_email_validated = models.IntegerField(default=0)
-    user_validation_code = models.BigIntegerField()
+    user_validation_code = models.BigIntegerField(default=100000001)
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -47,3 +47,11 @@ class CustomUser(AbstractUser):
         related_name='user_perms',
         blank = True
     )
+
+    def save(self, *args, **kwargs):
+        # Ensuring fields are not None
+        if self.phone_number is None:
+            self.phone_number = ''
+        if self.portfolio is None:
+            self.portfolio = []
+        super().save(*args, **kwargs)
