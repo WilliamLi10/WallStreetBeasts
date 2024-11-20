@@ -4,6 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import StockDisplayPage from "./pages/StockDisplayPage";
 import Login from "./pages/Login";
 import PortfolioPage from "./pages/PortfolioPage";
+import NewsArticlePage from "./pages/NewsArticlePage";
 import Signup from "./pages/Signup";
 import Error from "./components/Error";
 import "tailwindcss/tailwind.css";
@@ -28,9 +29,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/Portfolio",
-    element: <PortfolioPage />
-  }
-
+    element: <PortfolioPage />,
+  },
+  {
+    path: "/news/:id",
+    element: <NewsArticlePage />,
+  },
 ]);
 
 const App = () => {

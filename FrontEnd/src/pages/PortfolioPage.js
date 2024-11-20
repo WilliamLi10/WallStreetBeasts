@@ -3,6 +3,7 @@ import NavBar from "../components/navBar";
 import CustomFooter from "../components/customFooter";
 import SearchBar from "../components/searchBar";
 import { Line } from "react-chartjs-2";
+import { Link } from "react-router-dom";
 import {
   Chart as ChartJS,
   LineElement,
@@ -13,7 +14,14 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend
+);
 
 const PortfolioPage = () => {
   const [portfolioData, setPortfolioData] = useState(null);
@@ -107,12 +115,20 @@ const PortfolioPage = () => {
       },
     ],
     updates: [
-      { title: "Apple New Phone Release", description: "Apple releases new phone today..." },
-      { title: "Amazon Drones Attack DC", description: "The supreme court was attacked..." },
-      { title: "Zuckerberg Chokes Out Musk", description: "Mark Zuckerberg wins by Sub..." },
+      {
+        title: "Apple New Phone Release",
+        description: "Apple releases new phone today...",
+      },
+      {
+        title: "Amazon Drones Attack DC",
+        description: "The supreme court was attacked...",
+      },
+      {
+        title: "Zuckerberg Chokes Out Musk",
+        description: "Mark Zuckerberg wins by Sub...",
+      },
     ],
   });
-  
 
   // Fetch portfolio data (mocked initially)
   useEffect(() => {
@@ -149,7 +165,9 @@ const PortfolioPage = () => {
         {/* Left Section: Chart */}
         <div className="col-span-2 bg-white shadow-md rounded-lg p-6">
           <h2 className="text-2xl font-semibold mb-4">
-            {selectedStock ? `${selectedStock.name} Performance` : "Portfolio Performance"}
+            {selectedStock
+              ? `${selectedStock.name} Performance`
+              : "Portfolio Performance"}
           </h2>
           <Line
             data={selectedStock ? selectedStock.chart : chart}
@@ -165,7 +183,17 @@ const PortfolioPage = () => {
               key={index}
               className="border-b border-gray-300 pb-4 mb-4 last:border-0 last:pb-0 last:mb-0"
             >
-              <h3 className="font-semibold text-gray-800">{update.title}</h3>
+              <Link
+                to={`/news/${update.id}`}
+                state={{
+                  title: update.title,
+                  date: update.date,
+                  author: update.author,
+                }}
+                className="block hover:underline"
+              >
+                <h3 className="font-semibold text-gray-800">{update.title}</h3>
+              </Link>
               <p className="text-sm text-gray-600">{update.description}</p>
             </div>
           ))}
@@ -187,7 +215,9 @@ const PortfolioPage = () => {
               {portfolio.map((stock, index) => (
                 <tr
                   key={index}
-                  className={`cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : ""}`}
+                  className={`cursor-pointer ${
+                    index % 2 === 0 ? "bg-gray-50" : ""
+                  }`}
                   onClick={() => setSelectedStock(stock)}
                 >
                   <td className="py-2">{stock.name}</td>
