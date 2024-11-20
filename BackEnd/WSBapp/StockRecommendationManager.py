@@ -3,7 +3,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from time import sleep
-from stock_analyzer import StockAnalyzer
+from .stock_analyzer import StockAnalyzer
 import csv
 
 @dataclass
