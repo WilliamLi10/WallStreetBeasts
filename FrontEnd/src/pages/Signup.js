@@ -1,14 +1,39 @@
 import React, { useState } from 'react';
 
+
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({username: username, email:email, password: password})
+    // need to store login code in cookie named token
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Perform signup action here
+    fetch('wsb-api/register/', requestOptions)
+      .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    })
+    .then(data => {
+      // Handle the data returned from the server
+      console.log('Post request response:', data);
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the fetch
+      console.error('There was a problem with the fetch operation:', error);
+    });
     console.log('Username:', username);
     console.log('Email:', email);
     console.log('Password:', password);
