@@ -1,14 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const LOGIN_URL = 'wsb-api/login/';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({username: email, password: password})
+    // need to store login code in cookie named token
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Perform login action here
+    fetch('wsb-api/login/', requestOptions)
+      .then(response => {
+      if (response.ok) {
+        // Parse the JSON response
+        return response.json();
+      } else {
+        throw new Error('Network response was not ok');
+      }    
+    })
+    .then(data => {
+      // Handle the data returned from the server
+      console.log('Post request response:', data);
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the fetch
+      console.error('There was a problem with the fetch operation:', error);
+    });
     console.log('Email:', email);
     console.log('Password:', password);
   };

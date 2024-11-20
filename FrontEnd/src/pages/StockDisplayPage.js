@@ -1,5 +1,5 @@
 // CompanyProfile.js
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import NavBar from "../components/navBar";
 import CustomFooter from "../components/customFooter";
 import SearchBar from "../components/searchBar";
@@ -12,16 +12,24 @@ ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Le
 const StockDisplayPage = () => {
   const [showDoughnut, setShowDoughnut] = useState(true);
 
-  /*
-  Work in progress for getting stock data json and reformatting
-
-  useEffect(() => {
-    const fetch_stock_data = async () => {
-      const back_end_response = await fetch(`wsb-api/stocks/`);
-      const company_data_json= await response.json();
-    };
-  },[]);
-  */ 
+  fetch('wsb-api/stocks/')
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    })
+    .then(data => {
+      console.log('Data received:', data);
+      // data needs to be pulled from the json and assigned to 
+      // companyData in here
+      
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  
 
   const companyData = {
     symbol: "NWP",
