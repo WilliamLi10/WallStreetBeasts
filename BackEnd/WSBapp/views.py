@@ -47,16 +47,23 @@ def login_view(request):
     users = database['WSBapp_customuser']
     user = users.find_one({'username': username})
     hashed_password = user['password']
+    theme = user['theme']
+    if theme == 0:
+        theme = 'light'
+    else:
+        theme = 'dark'
 
     is_valid = check_password(password, hashed_password)
 
     print(is_valid)
 
     if not is_valid:
+        client.close()
         return Response({'error':'Wrong'}, status=400)
     else:
         token = gen_token(username)
-        return Response({'token':token}, status=200)
+        client.close()
+        return Response({'token':token, 'theme':token}, status=200)
 
 @api_view(['POST'])    
 def registration_view(request):
@@ -97,6 +104,13 @@ def registration_view(request):
         client = MongoClient('localhost', 27017)
         database = client['wsbdb']
         users = database['WSBapp_customuser']
+
+        if users.find_one({'username': username}) is not None:
+            return Response({'error':'Username already exists'}, status=400)
+
+        if users.find_one({'email': email}) is not None:
+            return Response({'error':'Email already exists'}, status=400)
+
         users.insert_one(user_data)
         client.close()
 
@@ -143,8 +157,10 @@ def verify_email_view(request):
     print(actual_code)
     if input_code == actual_code:
             users.update_one({'username': username}, {'$set': {'user_email_validated': 1}})
+            client.close()
             return Response({'message':"User Validated"}, status = 200)
     
+    client.close()
     return Response({'error':'User was not able to be validated'}, status = 400)
 
 @api_view(['POST'])
@@ -170,6 +186,7 @@ def request_new_code_view(request):
         fail_silently=False
     )
 
+    client.close()
     return Response({'message':'Code Regenerated and Email Resent'}, status = 200)
 
 @api_view(['POST'])
@@ -197,6 +214,7 @@ def reset_password_view(request):
         fail_silently=False
     )
 
+    client.close()
     return Response({'message':'Password Reset and Email Sent'}, status=200)
 
 @api_view(['POST'])
@@ -234,6 +252,7 @@ def edit_portfolio_view(request):
             else:
                 portfolio_string += portfolio[i] + " "
         users.update_one({'username': username}, {'$set': {'portfolio': portfolio_string}})
+        client.close()
         return Response({'message':'Portfolio Updated', 'portfolio':portfolio}, status=200)
     
 @api_view(['POST'])
@@ -249,6 +268,7 @@ def get_portfolio_view(request):
         user = users.find_one({'username': username})
         portfolio = user['portfolio']
         portfolio = portfolio.split()
+        client.close()
         return Response({'portfolio':portfolio}, status=200)
 
 def make_analyzed_stock_json(stock_data):
