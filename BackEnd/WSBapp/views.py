@@ -14,7 +14,7 @@ from .models import CustomUser
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .token import gen_token, verify_token, delete_token
+from .my_token import gen_token, verify_token, delete_token
 from pymongo import MongoClient
 from django.contrib.auth.hashers import make_password, check_password
 import os
