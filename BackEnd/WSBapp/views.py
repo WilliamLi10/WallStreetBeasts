@@ -271,6 +271,67 @@ def get_portfolio_view(request):
         client.close()
         return Response({'portfolio':portfolio}, status=200)
 
+@api_view(['POST'])
+def change_email_view(request):
+    email = request.data.get('email')
+    token = request.data.get('token')
+
+    username = verify_token(token)
+    client = MongoClient('localhost', 27017)
+    database = client['wsbdb']
+    users = database['WSBapp_customuser']
+    user = users.find_one({'username': username})
+    verified = user['user_email_validated']
+    if verified == 0:
+        client.close()
+        return Response({'error':'Email not validated'}, status=400)
+    old = user['email']
+    users.update_one({'username': username}, {'$set': {'email': email}})
+    user = users.find_one({'email': old})
+    if user != None:
+        users.update_one({'username': username}, {'$set': {'email': old}})
+        client.close()
+        return Response({'error':'Email already exists'}, status=400)
+    client.close()
+    return Response({'message':'Email Updated', 'new_email':email, 'old_email':old}, status=200)
+
+@api_view(['POST'])
+def change_password_view(request):
+    password = request.data.get('password')
+    token = request.data.get('token')
+
+    username = verify_token(token)
+    client = MongoClient('localhost', 27017)
+    database = client['wsbdb']
+    users = database['WSBapp_customuser']
+    user = users.find_one({'username': username})
+    verified = user['user_email_validated']
+    if verified == 0:
+        client.close()
+        return Response({'error':'Email not validated'}, status=400)
+    hashed_password = make_password(password)
+    users.update_one({'username': username}, {'$set': {'password': hashed_password}})
+    client.close()
+    return Response({'message':'Password Updated'}, status=200)
+
+@api_view(['POST'])
+def change_theme_view(request):
+    theme = request.data.get('theme')
+    token = request.data.get('token')
+
+    if theme == 'light':
+        theme = 0
+    else:
+        theme = 1
+
+    username = verify_token(token)
+    client = MongoClient('localhost', 27017)
+    database = client['wsbdb']
+    users = database['WSBapp_customuser']
+    users.update_one({'username': username}, {'$set': {'theme': theme}})
+    client.close()
+    return Response({'message':'Theme Updated', 'theme':theme}, status=200)
+
 def make_analyzed_stock_json(stock_data):
     options = list(stock_data.keys())
     Analyzed_stock_classes = list()
