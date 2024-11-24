@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import json
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
-from stock_analyzer import StockAnalyzer, StockFormat
 from StockData import StockData
 
 
