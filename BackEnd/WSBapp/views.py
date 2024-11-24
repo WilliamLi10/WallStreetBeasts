@@ -14,16 +14,31 @@ from .models import CustomUser
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .token import gen_token, verify_token, delete_token
+from .my_token import gen_token, verify_token, delete_token
 from pymongo import MongoClient
 from django.contrib.auth.hashers import make_password, check_password
 import os
 from pathlib import Path
+from .news import get_news
 
 # Create your views here.
 @api_view(['GET'])
 def landing_page(request):
-    return Response({'test':'test'}, status=status.HTTP_200_OK)
+    news = get_news()
+    if news is None:
+        client = MongoClient('localhost', 27017)
+        database = client['wsbdb']
+        collection = database['news-backup']
+        news = collection.find_one()
+        client.close()
+    else:
+        client = MongoClient('localhost', 27017)
+        database = client['wsbdb']
+        collection = database['news-backup']
+        collection.replace_one({}, news, upsert=True)
+        client.close()
+
+    return Response({'news':news}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def login_view(request):
