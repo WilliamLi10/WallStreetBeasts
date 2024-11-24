@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect } from 'react-router';
 
 
 const Signup = () => {
@@ -21,19 +22,37 @@ const Signup = () => {
     fetch('http://localhost:8000/wsb-api/register/', requestOptions)
       .then(response => {
       if (response.ok) {
-        console.log("There was a response", response);
-        return response.json();
+        console.log("There was a response (sign up)", response);
+        fetch('http://localhost:8000/wsb-api/login/', requestOptions)
+          .then(response => {
+          if (response.ok) {
+            console.log("There was a response (log in)", response);
+            return (<Redirect to='http://localhost:8000/wsb-api/portfolio/' />);
+            //return response.json();
+          } else {
+            throw new Error('Network response was not ok (log in)');
+          }
+        })
+        .then(data => {
+          // Handle the data returned from the server
+          console.log('Post request response (log in):', data);
+        })
+        .catch(error => {
+          // Handle any errors that occurred during the fetch
+          console.error('There was a problem with the fetch operation (log in):', error);
+        });
+        //return response.json();
       } else {
-        throw new Error('Network response was not ok');
+        throw new Error('Network response was not ok (sign up)');
       }
     })
     .then(data => {
       // Handle the data returned from the server
-      console.log('Post request response:', data);
+      console.log('Post request response (sign up):', data);
     })
     .catch(error => {
       // Handle any errors that occurred during the fetch
-      console.error('There was a problem with the fetch operation:', error);
+      console.error('There was a problem with the fetch operation (sign up):', error);
     });
     console.log('Username:', username);
     console.log('Email:', email);

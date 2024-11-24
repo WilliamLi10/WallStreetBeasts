@@ -12,7 +12,17 @@ ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Le
 const StockDisplayPage = () => {
   const [showDoughnut, setShowDoughnut] = useState(true);
 
-  fetch('wsb-api/stocks/')
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ticker: stockTicker})
+    // need to store login code in cookie named token
+  };
+
+  fetch('http://localhost:8000/wsb-api/stocks/', requestOptions)
     .then(response => {
       if (response.ok) {
         return response.json();
@@ -30,6 +40,23 @@ const StockDisplayPage = () => {
       console.error('There was a problem with the fetch operation:', error);
     });
   
+  const stockData ={
+    ticker: data.ticker,
+    recommendation: data.reccomendation,
+    score: data.score,
+    volume_status: data.volume_status,
+    volume_ratio: data.volume_ratio,
+    pe_status: data.pe_status,
+    pe_ratio: data.pe_ratio,
+    industry_pe_ratio: data.industry_pe_ratio,
+    growth_potential: data.growth_potential,
+    current_price: data.current_price,
+    target_price: data.target_price,
+    dividend_status: data.dividend_status,
+    dividend_yield: data.dividend_yield,
+    beta: data.beta,
+    volatility: data.volatility 
+  };
 
   const companyData = {
     symbol: "NWP",

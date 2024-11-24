@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect } from 'react-router';
 
 
 const Login = () => {
@@ -22,7 +23,8 @@ const Login = () => {
       if (response.ok) {
         // Parse the JSON response
         console.log("There was a response", response);
-        return response.json();
+        return (<Redirect to='http://localhost:8000/wsb-api/portfolio/' />);
+        //return response.json();
       } else {
         throw new Error('Network response was not ok');
       }    
