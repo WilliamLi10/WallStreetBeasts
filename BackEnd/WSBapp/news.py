@@ -3,44 +3,46 @@ from dotenv import load_dotenv
 import json
 import sys
 from datetime import datetime
+from pymongo import MongoClient
+import finnhub
+import time
 
 def get_current_news():
 
     a = load_dotenv("api.env")
 
-    print(a)
-
     api_key = os.getenv("API_KEY")
-
-    print(api_key)
 
     if api_key is None:
         sys.exit(1)
 
-    import http.client, urllib.parse
+    finnhub_client = finnhub.Client(api_key=api_key)
 
-    conn = http.client.HTTPSConnection('api.marketaux.com')
+    news = finnhub_client.general_news('general', min_id=0)
+    news = str(news)
+    time.sleep(5)
 
-    params = urllib.parse.urlencode({
-        'api_token': api_key,
-        'limit': 3,
-    })
+    return news
+    
+def get_news():
+    client = MongoClient('localhost', 27017)
+    database = client['wsbdb']
+    collection = database['news']
+    date = datetime.now().strftime("%Y%m%d")
+    news_in_database = collection.find_one({'date':date})
+    news = None
+    if news_in_database is None:
+        news = get_current_news()
+        if news['news'] is None:
+            return None
+        news_data = {
+            'date': date,
+            'news': news
+        }
+        collection.insert_one(news_data)
+    else:
+        news = news_in_database['news']
 
-    conn.request('GET', '/v1/news/all?{}'.format(params))
+    return news
 
-    res = conn.getresponse()
-    data = res.read()
-
-    decoded_data = data.decode('utf-8')
-
-    news = json.loads(decoded_data)
-
-    final = dict()
-
-    final['datetime'] = datetime.now()
-
-    final['news'] = news
-
-    return final
-
-get_current_news()
+get_news()
