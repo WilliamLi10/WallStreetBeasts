@@ -1,23 +1,20 @@
 import csv
-import pandas as pd
 from typing import List, Dict
-import yfinance as yf
+import time
+from datetime import datetime, timedelta
+import json
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
-from stock_analyzer import StockAnalyzer,StockFormat
+from stock_analyzer import StockAnalyzer, StockFormat
 from StockData import StockData
-import time
 
 
 class StockAnalyzer:
-    def __init__(self, csv_file: str):
+    def __init__(self):
         """
-        Initialize the StockAnalyzer with a CSV file containing stock information.
-
-        Args:
-            csv_file (str): Path to the CSV file containing stock information
+        Initialize the StockAnalyzer with a hardcoded CSV file containing stock information.
         """
-        self.csv_file = csv_file
+        self.csv_file = 'stock_info.csv'
         self.tickers: List[str] = []
         self.stock_data: Dict[str, StockData] = {}
         self._load_tickers()
@@ -84,28 +81,48 @@ class StockAnalyzer:
             reverse=True
         )
 
-        # Save the current date and time to trending_stocks.json after deleting everything inside of it
-        with open('trending_stocks.json', 'w') as file:
-             file.write('')
-             file.close()
-        # Save the current date and time to trending_stocks.json
-        with open('trending_stocks.json', 'a') as file:
-            file.write(time.strftime("%Y-%m-%d %H:%M:%S") + '\n')
-            file.close()
-        # Return the n most traded stocks to trending_stocks.json
-        with open('trending_stocks.json', 'a') as file:
-            for ticker, stock in sorted_stocks[:n]:
-                if stock is not None:
-                    file.write(f"{ticker}: {stock.volume}\n")
-            file.close()
+        # Prepare data to write to JSON
+        trending_data = {
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "most_traded": [
+                {"ticker": ticker, "volume": stock.volume}
+                for ticker, stock in sorted_stocks[:n]
+                if stock is not None
+            ]
+        }
+
+        # Check if the JSON file needs to be updated
+        self._update_trending_json(trending_data)
+
         return [(ticker, stock.volume) for ticker, stock in sorted_stocks[:n]]
-def main():
-    csv_file = 'stock_info.csv'
-    analyzer = StockAnalyzer(csv_file)
+
+    def _update_trending_json(self, trending_data: dict) -> None:
+        """Update the trending_stocks.json file if needed."""
+        try:
+            # Read the JSON file
+            with open('trending_stocks.json', 'r') as file:
+                existing_data = json.load(file)
+
+            # Parse timestamp from existing data
+            last_updated = datetime.strptime(existing_data["timestamp"], "%Y-%m-%d %H:%M:%S")
+
+            # Check if the timestamp is within the last 3 hours
+            if datetime.now() - last_updated < timedelta(hours=3):
+                print("Trending stocks are already up-to-date.")
+                return
+        except (FileNotFoundError, KeyError, json.JSONDecodeError):
+            # If file doesn't exist or is invalid, proceed to update
+            print("Updating trending_stocks.json...")
+
+        # Write new data to the JSON file
+        with open('trending_stocks.json', 'w') as file:
+            json.dump(trending_data, file, indent=4)
+            print("Trending stocks updated.")
+
+
+if __name__ == "__main__":
+    analyzer = StockAnalyzer()
     analyzer.load_stock_data()
     most_traded_stocks = analyzer.get_most_traded_stocks(10)
     for ticker, volume in most_traded_stocks:
         print(f"{ticker}: {volume}")
-
-if __name__ == "__main__":
-    main()
