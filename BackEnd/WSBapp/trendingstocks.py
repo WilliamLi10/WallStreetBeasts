@@ -84,10 +84,21 @@ class StockAnalyzer:
             reverse=True
         )
 
-        # Return top n stocks
-        return [(ticker, stock.volume)
-                for ticker, stock in sorted_stocks[:n]
-                if stock is not None]
+        # Save the current date and time to trending_stocks.json after deleting everything inside of it
+        with open('trending_stocks.json', 'w') as file:
+             file.write('')
+             file.close()
+        # Save the current date and time to trending_stocks.json
+        with open('trending_stocks.json', 'a') as file:
+            file.write(time.strftime("%Y-%m-%d %H:%M:%S") + '\n')
+            file.close()
+        # Return the n most traded stocks to trending_stocks.json
+        with open('trending_stocks.json', 'a') as file:
+            for ticker, stock in sorted_stocks[:n]:
+                if stock is not None:
+                    file.write(f"{ticker}: {stock.volume}\n")
+            file.close()
+        return [(ticker, stock.volume) for ticker, stock in sorted_stocks[:n]]
 def main():
     csv_file = 'stock_info.csv'
     analyzer = StockAnalyzer(csv_file)
