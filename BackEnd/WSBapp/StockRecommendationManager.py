@@ -3,7 +3,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from time import sleep
-from .stock_analyzer import StockAnalyzer
+from stock_analyzer import StockAnalyzer
 import csv
 
 @dataclass
@@ -73,7 +73,9 @@ class PortfolioAnalyzer:
         Returns:
             Dict[str, List[AnalyzedStock]]: A dictionary mapping recommendation categories to lists of analyzed stocks.
         """
-        categorized_stocks = defaultdict(list)
+        # Initialize the dictionary with all categories as keys
+        categorized_stocks = {key: [] for key in ['Strong Buy', 'Buy', 'Hold', 'Sell', 'Strong Sell', 'Error']}
+        processed_count = 0
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # Submit all analysis tasks
@@ -84,15 +86,21 @@ class PortfolioAnalyzer:
             # Process results as they complete
             for future in as_completed(future_to_ticker):
                 result = future.result()
-
                 categorized_stocks[result.recommendation].append(result)
-                sleep(self.delay_between_calls)  # Rate limiting
+                processed_count += 1
+
+                # Add a delay every 3 stocks
+                if processed_count % 3 == 0:
+                    sleep(1)
+
+                # Rate limiting between API calls
+                sleep(self.delay_between_calls)
 
         # Sort stocks within each category by score
         for category in categorized_stocks:
             categorized_stocks[category].sort(key=lambda x: abs(x.score), reverse=True)
 
-        return dict(categorized_stocks)
+        return categorized_stocks
 
     def get_summary(self, analyzed_stocks: Dict[str, List[AnalyzedStock]]) -> str:
         """
