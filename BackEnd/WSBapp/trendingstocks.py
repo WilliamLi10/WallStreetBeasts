@@ -8,6 +8,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 from StockData import StockData
+from ratelimiting import yfinanceratelimiting
 class StockAnalyzer:
     def __init__(self):
         # Initialization remains the same
@@ -41,7 +42,8 @@ class StockAnalyzer:
             stock_data = self._process_ticker(ticker)
             if stock_data:
                 self.stock_data[ticker] = stock_data
-            if idx % 5 == 0:  # Add a delay every 7 stocks
+           #add a sleep to avoid rate limiting use ratelimiting.py to see how many requests you can make
+            if idx % yfinanceratelimiting() == 0:
                 time.sleep(1)
 
     def get_most_traded_stocks(self, n: int = 10) -> List[tuple[str, int]]:
