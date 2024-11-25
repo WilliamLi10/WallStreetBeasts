@@ -157,7 +157,6 @@ BHE,Benchmark Electronics,NYSE
 BHK,Blackrock Core Trust,NYSE
 BHLB,Berkshire Hills Bancorp,NYSE
 BHP,Bhp Billiton Limited,NYSE
-BIG,Big Lots,NYSE
 BIO,Bio-Rad Laboratories,NYSE
 BIOA,Bioamber Inc.,NYSE
 BIP,Brookfield Infrastructure Partners Lp,NYSE
@@ -240,7 +239,6 @@ CCZ,Comcast Corp.,NYSE
 CDE,Coeur D'Alene Mines Corp.,NYSE
 CE,Celanese Corp.,NYSE
 CEE,Central Europe And Russia Fund,NYSE
-CEM,Clearbridge Energy MLP Fund Inc.,NYSE
 CF,Cf Industries Holdings,NYSE
 CFR,Cullen/Frost Bankers,NYSE
 CGA,China Green Agriculture,NYSE
@@ -312,7 +310,6 @@ CSL,Carlisle Companies Inc.,NYSE
 CSTM,Constellium N.V.,NYSE
 CSV,Carriage Services,NYSE
 CSX,Csx Corp.,NYSE
-CTR,Clearbridge Energy MLP Fund In  ,NYSE
 CTS,Cts Corp.,NYSE
 CUB,Cubic Corp.,NYSE
 CUBE,Cubesmart  ,NYSE
@@ -372,7 +369,6 @@ DMB,Dreyfus Munipal Bond Indrastr,NYSE
 DMO,Western Asset Mortgage Defined Opp,NYSE
 DNB,Dun & Bradstreet Corp.,NYSE
 DNP,Duff & Phelps Utilities Income,NYSE
-DO,Diamond Offshore Drilling,NYSE
 DOC,Physicians Realty Trust,NYSE
 DOLE,Dole Food Company,NYSE
 DOV,Dover Corp.,NYSE
@@ -384,7 +380,6 @@ DQ,Daqq New Energy,NYSE
 DRD,Drdgold Limited,NYSE
 DRH,Diamondrock Hospitality Company,NYSE
 DRI,Darden Resorts International,NYSE
-DRQ,Dril-Quip,NYSE
 DSL,Doubleline Income Solutions Fun,NYSE
 DSM,Dreyfus Strategic Muni Bond Fund,NYSE
 DSU,Blackrock Debt Strategies Fund,NYSE
@@ -486,7 +481,6 @@ EXP,Eagle Materials Inc ,NYSE
 EXR,Extra Space Storage Inc,NYSE
 F,Ford Motor Company,NYSE
 FAF,First American Corp.,NYSE
-FAM,First Trust/Aberdeen Global Opportunity,NYSE
 FBP,First Bancorp.,NYSE
 FC,Franklin Covey Company,NYSE
 FCF,First Commonwealth Financial Corp.,NYSE
@@ -830,7 +824,6 @@ MEI,Methode Electronics,NYSE
 MET,Metlife,NYSE
 MFA,Mfa Financial Inc,NYSE
 MFC,Manulife Financial Corp,NYSE
-MFD,Macquarie/First Trust Global,NYSE
 MFG,Mizuho Financial Group,NYSE
 MFM,Mfs Muni Income Trust,NYSE
 MG,Mistras Group Inc,NYSE
@@ -1168,7 +1161,6 @@ RYN,Rayonier Inc. REIT,NYSE
 S,Sprint Corporation Series 1,NYSE
 SA,Seabridge Gold,NYSE
 SAH,Sonic Automotive,NYSE
-SAI,Saic Inc,NYSE
 SAM,Boston Beer Company,NYSE
 SAN,Banco Santander,NYSE
 SAP,Sap Ag,NYSE
@@ -1340,7 +1332,6 @@ TTC,Toro Company,NYSE
 TTI,Tetra Technologies,NYSE
 TTP,Tortoise Pipeline & Energy Fund,NYSE
 TU,Telus Corp. Non Voting Shares,NYSE
-TUP,Tupperware Corp.,NYSE
 TV,Grupo Televisa S.A.,NYSE
 TVC,Tennessee Valley Authority,NYSE
 TVE,Tennessee Valley Authority,NYSE
@@ -1446,7 +1437,6 @@ AKAM,Akamai Technologies,NASDAQ
 ALCO,Alico,NASDAQ
 ALGN,Align Technology,NASDAQ
 ALGT,Allegiant Travel Company,NASDAQ
-ALIM,Alimera Sciences,NASDAQ
 ALKS,Alkermes,NASDAQ
 ALLT,Allot Communications Ltd,NASDAQ
 ALNY,Alnylam Pharmaceuticals,NASDAQ
@@ -1778,7 +1768,6 @@ EMITF,Elbit Imaging Ltd,NASDAQ
 EMKR,Emcore Corp.,NASDAQ
 EML,Eastern Company,NASDAQ
 EMMS,Emmis Communications Corp.,NASDAQ
-ENDP,Endo Pharmaceuticals Holdings Inc.,NASDAQ
 ENG,Englobal Corp.,NASDAQ
 ENPH,Enphase Energy Inc.,NASDAQ
 ENSG,The Ensign Group,NASDAQ
@@ -1845,7 +1834,6 @@ FOSL,Fossil,NASDAQ
 FOX,21St Century Fox Class B,NASDAQ
 FOXA,21St Century Fox Class A,NASDAQ
 FOXF,Fox Factory Holding Corp.,NASDAQ
-FRBK,Republic First Bancorp,NASDAQ
 FRME,First Merchants Corp.,NASDAQ
 FSBW,Fs Bancorp Inc.,NASDAQ
 FSFG,First Savings Financial Group,NASDAQ
@@ -1870,7 +1858,6 @@ GBDC,Golub Capital Bdc,NASDAQ
 GBLI,Global Indemnity Plc,NASDAQ
 GCBC,Greene County Bancorp,NASDAQ
 GENC,Gencor Industries Inc.,NASDAQ
-GENE,Genetic Technologies Ltd,NASDAQ
 GENT,Gentium Spa,NASDAQ
 GEOS,Oyo Geospace Corp.,NASDAQ
 GERN,Geron Corp.,NASDAQ
@@ -1919,7 +1906,6 @@ GTLS,Chart Industries,NASDAQ
 GULF,Middle East Dividend Wisdomtree,NASDAQ
 GURE,Gulf Resources,NASDAQ
 GYRO,Gyrodyne Company Of America,NASDAQ
-HA,Hawaiian Holdings,NASDAQ
 HAFC,Hanmi Financial Corp.,NASDAQ
 HAIN,The Hain Celestial Group,NASDAQ
 HALL,Hallmark Financial Services,NASDAQ
@@ -2466,7 +2452,6 @@ SIGI,Selective Insurance Group,NASDAQ
 SILC,Silicom Ltd,NASDAQ
 SIMO,Silicon Motion Technology Corp.,NASDAQ
 SIRI,Sirius Xm Radio Inc.,NASDAQ
-SIVB,Svb Financial Group,NASDAQ
 SKYW,Skywest,NASDAQ
 SKYY,ISE Cloud Computing Index First Trust,NASDAQ
 SLAB,Silicon Laboratories,NASDAQ
@@ -2559,7 +2544,6 @@ TRAK,Dealertrack Holdings,NASDAQ
 TREE,Tree.Com,NASDAQ
 TRIB,Trinity Biotech Plc,NASDAQ
 TRIP,Tripadvisor Inc.,NASDAQ
-TRIT,Tri-Tech Holding Inc.,NASDAQ
 TRMB,Trimble Navigation Limited,NASDAQ
 TRMK,Trustmark Corp.,NASDAQ
 TRNS,Transcat,NASDAQ

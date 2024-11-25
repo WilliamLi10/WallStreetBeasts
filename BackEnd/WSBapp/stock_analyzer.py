@@ -392,3 +392,6 @@ class StockAnalyzer:
         elif score <= -2:
             return 'Sell'
         return 'Hold'
+# Example usage :
+# analysis_result = StockAnalyzer.analyze_stock('AAPL')
+# print(analysis_result)

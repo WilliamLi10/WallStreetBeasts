@@ -5,14 +5,12 @@ from pandas import DataFrame, Series
 
 class StockData:
     def __init__(self, ticker: str):
-        """
-        Initialize the StockData object with a ticker symbol.
-
-        Args:
-            ticker (str): The ticker symbol of the stock.
-        """
         self.ticker = yf.Ticker(ticker)
-        self.info = self.ticker.info
+        try:
+            self.info = self.ticker.info
+        except Exception as e:
+            print(f"Error fetching data for {ticker}: {e}")
+            self.info = {}
 
     def get_info(self) -> dict:
         """
@@ -518,25 +516,29 @@ class StockData:
             str: A string representation of the StockData object.
         """
         return self.__str__()
-if __name__ == "__main__":
-    apple = StockData("AAPL")
-    stock_metrics = apple.get_everything()
+# Example usage :
 
-    assert isinstance(stock_metrics, list)
-    assert len(stock_metrics) == 13
+#if __name__ == "__main__":
+    #apple = StockData("AAPL")
+    #stock_metrics = apple.get_everything()
 
-    # Print the stock metrics
-    print("Apple (AAPL) Stock Metrics:")
-    print(f"Volume: {stock_metrics[0]}")
-    print(f"Average Volume: {stock_metrics[1]}")
-    print(f"P/E Ratio: {stock_metrics[2]}")
-    print(f"Industry P/E Ratio: {stock_metrics[3]}")
-    print(f"1-Year Target Estimate: ${stock_metrics[4]}")
-    print(f"EPS: {stock_metrics[5]}")
-    print(f"Dividend Yield: {stock_metrics[6] * 100}%")
-    print(f"Debt to Equity: {stock_metrics[7]}")
-    print(f"Current Ratio: {stock_metrics[8]}")
-    print(f"Price to Book: {stock_metrics[9]}")
-    print(f"Return on Equity: {stock_metrics[10] * 100}%")
-    print(f"Free Cash Flow: {stock_metrics[11]}")
-    print(f"Beta: {stock_metrics[12]}")
+    # Validate that the stock metrics list is as expected
+    # assert isinstance(stock_metrics, list)
+    # assert len(stock_metrics) == 13
+
+    # Example usage of the StockData class:
+    # Uncomment the following to test and display Apple stock metrics:
+    # print("Apple (AAPL) Stock Metrics:")
+    # print(f"Volume: {stock_metrics[0]}")
+    # print(f"Average Volume: {stock_metrics[1]}")
+    # print(f"P/E Ratio: {stock_metrics[2]}")
+    # print(f"Industry P/E Ratio: {stock_metrics[3]}")
+    # print(f"1-Year Target Estimate: ${stock_metrics[4]}")
+    # print(f"EPS: {stock_metrics[5]}")
+    # print(f"Dividend Yield: {stock_metrics[6] * 100}%")
+    # print(f"Debt to Equity: {stock_metrics[7]}")
+    # print(f"Current Ratio: {stock_metrics[8]}")
+    # print(f"Price to Book: {stock_metrics[9]}")
+    # print(f"Return on Equity: {stock_metrics[10] * 100}%")
+    # print(f"Free Cash Flow: {stock_metrics[11]}")
+    # print(f"Beta: {stock_metrics[12]}")
