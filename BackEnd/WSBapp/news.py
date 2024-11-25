@@ -16,11 +16,17 @@ def get_current_news():
     if api_key is None:
         sys.exit(1)
 
-    finnhub_client = finnhub.Client(api_key=api_key)
+    try:
+        finnhub_client = finnhub.Client(api_key=api_key)
 
-    news = finnhub_client.general_news('general', min_id=0)
-    news = str(news)
-    time.sleep(5)
+        print(finnhub_client)
+
+        news = finnhub_client.general_news('general', min_id=0)
+        time.sleep(5)
+    except Exception as e:
+        print("hello", e)
+        return None
+
 
     return news
     
@@ -33,7 +39,7 @@ def get_news():
     news = None
     if news_in_database is None:
         news = get_current_news()
-        if news['news'] is None:
+        if news is None:
             return None
         news_data = {
             'date': date,
@@ -44,5 +50,3 @@ def get_news():
         news = news_in_database['news']
 
     return news
-
-get_news()
