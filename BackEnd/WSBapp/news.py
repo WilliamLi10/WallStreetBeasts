@@ -50,3 +50,4 @@ def get_news():
         news = news_in_database['news']
 
     return news
+def getstocknews(ticker):
