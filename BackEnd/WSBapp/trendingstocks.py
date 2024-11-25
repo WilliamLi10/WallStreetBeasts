@@ -41,8 +41,7 @@ class StockAnalyzer:
             stock_data = self._process_ticker(ticker)
             if stock_data:
                 self.stock_data[ticker] = stock_data
-
-            if idx % 5 == 0:  # Add a delay every 5 stocks
+            if idx % 5 == 0:  # Add a delay every 7 stocks
                 time.sleep(1)
 
     def get_most_traded_stocks(self, n: int = 10) -> List[tuple[str, int]]:
@@ -56,7 +55,6 @@ class StockAnalyzer:
             key=lambda item: item[1].volume if item[1] else 0,
             reverse=True
         )
-
         # Return the top n tickers with their volumes
         return [(ticker, stock.volume) for ticker, stock in sorted_stocks[:n]]
 
@@ -68,11 +66,9 @@ class StockAnalyzer:
                 existing_data = json.load(file)
             last_updated = datetime.strptime(existing_data.get("timestamp", ""), "%Y-%m-%d %H:%M:%S")
             if datetime.now() - last_updated < timedelta(hours=3):
-                print("Trending stocks are already up-to-date.")
                 return
         except (FileNotFoundError, KeyError, json.JSONDecodeError):
             pass
-
         with open('trending_stocks.json', 'w') as file:
             json.dump({"timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "data": trending_data}, file, indent=4)
 
