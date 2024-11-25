@@ -11,6 +11,7 @@ import random
 from django.conf import settings
 from .StockRecommendationManager import PortfolioAnalyzer
 from .models import CustomUser
+from .stock_search import stock_search
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -351,6 +352,14 @@ def change_theme_view(request):
     users.update_one({'username': username}, {'$set': {'theme': theme}})
     client.close()
     return Response({'message':'Theme Updated', 'theme':theme}, status=200)
+
+@api_view(['POST'])
+def stock_search_view(request):
+    search_term=request.data.get('search_term')
+    result_list=stock_search().search(search_term)
+    #return(json.dumps(result_list))
+    return(result_list)
+
 
 def make_analyzed_stock_json(stock_data):
     options = list(stock_data.keys())
