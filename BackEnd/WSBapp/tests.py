@@ -1,57 +1,87 @@
-from django.test import TestCase
-from typing import Dict, List, Optional
-from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
-from time import sleep
-from stock_analyzer import StockAnalyzer,StockFormat
-from StockData import StockData
-from unittest.mock import patch, MagicMock
-import csv
-# Create your tests here.
+import unittest
+from unittest.mock import patch
+from BackEnd.WSBapp.stock_analyzer import StockAnalyzer
+from BackEnd.WSBapp.StockData import StockData
+from BackEnd.WSBapp.stock_analyzer import StockFormat
+class TestStockFormat(unittest.TestCase):
+    def test_current_price_calculation(self):
+        stock = StockFormat(
+            ticker="AAPL",
+            volume=1000000,
+            avg_volume=800000,
+            pe_ratio=20.0,
+            industry_pe_ratio=15.0,
+            target_est_1y=200.0,
+            eps=10.0
+        )
+        self.assertEqual(stock.current_price, 200.0)
 
+class TestStockData(unittest.TestCase):
+    @patch("yfinance.Ticker")  # Mock yfinance.Ticker
+    def test_initialization(self, mock_ticker):
+        mock_info = {
+            "volume": 1000000,
+            "averageVolume": 800000,
+            "trailingPE": 20.0,
+            "trailingEps": 10.0,
+            "targetMeanPrice": 200.0,
+            "industry": "Technology",
+        }
+        mock_ticker.return_value.info = mock_info
 
+        stock_data = StockData("AAPL")
+        self.assertEqual(stock_data.volume, 1000000)
+        self.assertEqual(stock_data.avg_volume, 800000)
+        self.assertEqual(stock_data.pe_ratio, 20.0)
+        self.assertEqual(stock_data.eps, 10.0)
+        self.assertEqual(stock_data.target_est_1y, 200.0)
+        self.assertEqual(stock_data.industry, "Technology")
 
-class StockAnalyzerTestCase(TestCase):
-    def setUp(self):
-        self.stock_analyzer = StockAnalyzer('stock_info.csv')
+    def test_get_industry_pe_ratio(self):
+        industry = "Healthcare"
+        pe_ratio = StockData._get_industry_pe_ratio(industry)
+        self.assertEqual(pe_ratio, 18.3)
 
-    @patch('stock_analyzer.StockAnalyzer.analyze')
-    def test_analyze(self, mock_analyze):
-        mock_analyze.return_value = StockFormat(price=100, volume=1000)
-        result = self.stock_analyzer.analyze('AAPL')
-        self.assertEqual(result.price, 100)
-        self.assertEqual(result.volume, 1000)
+        unknown_industry = "Unknown Industry"
+        pe_ratio = StockData._get_industry_pe_ratio(unknown_industry)
+        self.assertEqual(pe_ratio, 15.0)  # Default value
 
-    @patch('stock_analyzer.StockAnalyzer._load_tickers')
-    @patch('stock_analyzer.StockAnalyzer._process_ticker')
-    def test_load_stock_data(self, mock_process_ticker, mock_load_tickers):
-        mock_load_tickers.return_value = None
-        mock_process_ticker.side_effect = lambda ticker: (ticker, StockData(ticker))
-        self.stock_analyzer.tickers = ['AAPL', 'GOOGL']
-        self.stock_analyzer.load_stock_data()
-        self.assertIn('AAPL', self.stock_analyzer.stock_data)
-        self.assertIn('GOOGL', self.stock_analyzer.stock_data)
+class TestStockAnalyzer(unittest.TestCase):
+    @patch("stock_module.StockData")
+    def test_analyze_stock_format(self, MockStockData):
+        stock = StockFormat(
+            ticker="AAPL",
+            volume=1000000,
+            avg_volume=800000,
+            pe_ratio=20.0,
+            industry_pe_ratio=25.0,
+            target_est_1y=200.0,
+            eps=10.0,
+            dividend_yield=1.5,
+            debt_to_equity=0.8,
+            current_ratio=2.0,
+            price_to_book=1.5,
+            return_on_equity=15.0,
+            free_cash_flow=1.0,
+            beta=1.1,
+            industry="Technology"
+        )
+        analysis = StockAnalyzer.analyze_stock_format(stock)
+        self.assertIn("growth_potential", analysis)
+        self.assertIn("recommendation", analysis)
 
-    @patch('stock_analyzer.StockAnalyzer._load_tickers')
-    @patch('stock_analyzer.StockAnalyzer._process_ticker')
-    def test_get_most_traded_stocks(self, mock_process_ticker, mock_load_tickers):
-        mock_load_tickers.return_value = None
-        mock_process_ticker.side_effect = lambda ticker: (ticker, StockData(ticker))
-        self.stock_analyzer.tickers = ['AAPL', 'GOOGL']
-        self.stock_analyzer.load_stock_data()
-        self.stock_analyzer.stock_data['AAPL'].volume = 2000
-        self.stock_analyzer.stock_data['GOOGL'].volume = 1500
-        most_traded_stocks = self.stock_analyzer.get_most_traded_stocks(1)
-        self.assertEqual(most_traded_stocks, [('AAPL', 2000)])
+    @patch("stock_module.StockData")
+    def test_analyze_stock(self, MockStockData):
+        MockStockData.return_value.volume = 1000000
+        MockStockData.return_value.avg_volume = 800000
+        MockStockData.return_value.pe_ratio = 20.0
+        MockStockData.return_value.eps = 10.0
+        MockStockData.return_value.target_est_1y = 200.0
+        MockStockData.return_value.industry = "Technology"
 
-class StockDataTestCase(TestCase):
-    def setUp(self):
-        self.stock_data = StockData()
+        analysis = StockAnalyzer.analyze_stock("AAPL")
+        self.assertIn("potential_score", analysis)
+        self.assertIn("recommendation", analysis)
 
-    @patch('StockData.StockData.get_data')
-    def test_get_data(self, mock_get_data):
-        mock_get_data.return_value = {'AAPL': {'price': 150, 'volume': 2000}}
-        result = self.stock_data.get_data('AAPL')
-        self.assertEqual(result['price'], 150)
-        self.assertEqual(result['volume'], 2000)
+if __name__ == "__main__":
+    unittest.main()
