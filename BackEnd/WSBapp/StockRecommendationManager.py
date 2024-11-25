@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from time import sleep
 from stock_analyzer import StockAnalyzer
 import csv
+from ratelimiting import yfinanceratelimiting,yfinancelongerratelimiting
 
 @dataclass
 class AnalyzedStock:
@@ -90,11 +91,11 @@ class PortfolioAnalyzer:
                 processed_count += 1
 
                 # Brief pause after every 2 stocks
-                if processed_count % 2 == 0:
+                if processed_count % yfinanceratelimiting() == 0:
                     sleep(1)
 
                 # Longer pause after every 50 stocks
-                if processed_count % 50 == 0:
+                if processed_count % yfinancelongerratelimiting() == 0:
                     sleep(5)
 
                 # Additional delay (if any) to manage rate limits
@@ -132,19 +133,9 @@ class PortfolioAnalyzer:
                 summary.append("")
 
         return "\n".join(summary)
-
-#if __name__ == "__main__":
-    # Load tickers from stock_info.csv
-    #tickers = []
-    #with open('stock_info.csv', 'r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            tickers.append(row['Ticker'])
-
-    # Analyze the stocks
-    #analyzer = PortfolioAnalyzer()
-    #analyzed_stocks = analyzer.analyze_stocks(tickers)
-    #summary = analyzer.get_summary(analyzed_stocks)
-
-    # Optional: Display the summary
-    # print(summary)
+if __name__ == "__main__":
+    tickers = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
+    portfolio_analyzer = PortfolioAnalyzer()
+    analyzed_stocks = portfolio_analyzer.analyze_stocks(tickers)
+    summary = portfolio_analyzer.get_summary(analyzed_stocks)
+    print(summary)
