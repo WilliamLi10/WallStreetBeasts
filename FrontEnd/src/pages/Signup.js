@@ -1,43 +1,68 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+  // State variables
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({username: username, email:email, password: password})
-    // need to store login code in cookie named token
-  };
+  const navigate = useNavigate(); // Initialize navigate function
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('http://localhost:8000/wsb-api/register/', requestOptions)
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      console.error('Passwords do not match');
+      // Optionally, set an error message state to display to the user
+      return;
+    }
+
+    const registerOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password })
+    };
+
+    // Register the user
+    fetch('http://localhost:8000/wsb-api/register/', registerOptions)
       .then(response => {
-      if (response.ok) {
-        console.log("There was a response", response);
-        return response.json();
-      } else {
-        throw new Error('Network response was not ok');
-      }
-    })
-    .then(data => {
-      // Handle the data returned from the server
-      console.log('Post request response:', data);
-    })
-    .catch(error => {
-      // Handle any errors that occurred during the fetch
-      console.error('There was a problem with the fetch operation:', error);
-    });
-    console.log('Username:', username);
-    console.log('Email:', email);
-    console.log('Password:', password);
+        if (response.ok) {
+          console.log('Registration successful');
+
+          // Prepare login request
+          const loginOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          };
+
+          // Log the user in
+          return fetch('http://localhost:8000/wsb-api/login/', loginOptions);
+        } else {
+          throw new Error('Registration failed');
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Login successful');
+          return response.json();
+        } else {
+          throw new Error('Login failed');
+        }
+      })
+      .then(data => {
+        // Store the login token in a cookie
+        document.cookie = `token=${data.token}; path=/;`;
+
+        // Navigate to the portfolio page
+        navigate('/portfolio/');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Optionally, set an error message state to display to the user
+      });
   };
 
   return (
@@ -47,7 +72,6 @@ const Signup = () => {
           Sign Up
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
-          
           <div>
             <label className="block text-gray-600">Username</label>
             <input
@@ -102,7 +126,7 @@ const Signup = () => {
 
         <p className="mt-4 text-center text-gray-600">
           Already have an account?{' '}
-          <a href="/Login" className="text-blue-600 hover:underline">
+          <a href="/login" className="text-blue-600 hover:underline">
             Login
           </a>
         </p>

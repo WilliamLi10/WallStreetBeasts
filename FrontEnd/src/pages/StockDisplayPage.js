@@ -16,6 +16,36 @@ const StockDisplayPage = () => {
   const [currentPrice, setCurrentPrice] = useState(null);
   const [loadingPrice, setLoadingPrice] = useState(false);
 
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+    // need to store login code in cookie named token
+  };
+
+  fetch('http://localhost:8000/wsb-api/stocks/', requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    })
+    .then(data => {
+      console.log('Data received:', data);
+      // data needs to be pulled from the json and assigned to 
+      // companyData in here
+      
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  
+
+
   const companyData = {
     symbol: "NWP",
     name: "New World Products",

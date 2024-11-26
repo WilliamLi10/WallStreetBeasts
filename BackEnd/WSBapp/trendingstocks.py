@@ -1,29 +1,24 @@
 import csv
-import pandas as pd
 from typing import List, Dict
-import yfinance as yf
+import time
+from tqdm import tqdm
+from time import sleep
+from datetime import datetime, timedelta
+import json
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
-from stock_analyzer import StockAnalyzer,StockFormat
 from StockData import StockData
-import time
-
-
+from ratelimiting import yfinanceratelimiting
 class StockAnalyzer:
-    def __init__(self, csv_file: str):
-        """
-        Initialize the StockAnalyzer with a CSV file containing stock information.
-
-        Args:
-            csv_file (str): Path to the CSV file containing stock information
-        """
-        self.csv_file = csv_file
+    def __init__(self):
+        # Initialization remains the same
+        self.csv_file = 'stock_info.csv'
         self.tickers: List[str] = []
         self.stock_data: Dict[str, StockData] = {}
         self._load_tickers()
 
     def _load_tickers(self) -> None:
-        """Load ticker symbols from the CSV file."""
+        # Ticker loading remains the same
         try:
             with open(self.csv_file, 'r') as file:
                 csv_reader = csv.DictReader(file)
@@ -33,68 +28,52 @@ class StockAnalyzer:
         except KeyError:
             raise KeyError("CSV file must contain a 'Ticker' column")
 
-    def _process_ticker(self, ticker: str) -> tuple[str, StockData]:
-        """Process a single ticker symbol and return the ticker and its data."""
+    def _process_ticker(self, ticker: str) -> StockData:
+        """Process a single ticker and return its StockData object."""
         try:
-            stock_data = StockData(ticker)
-            return ticker, stock_data
+            return StockData(ticker)
         except Exception as e:
             print(f"Error processing ticker {ticker}: {str(e)}")
-            return ticker, None
+            return None
 
-    def load_stock_data(self, max_workers: int = 10) -> None:
-        """
-        Load stock data for all tickers using parallel processing.
-
-        Args:
-            max_workers (int): Maximum number of parallel workers
-        """
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            results = []
-            request_count = 0
-            for result in tqdm(
-                    executor.map(self._process_ticker, self.tickers),
-                    total=len(self.tickers),
-                    desc="Loading stock data"
-            ):
-                results.append(result)
-                request_count += 1
-                if request_count % 5 == 0:
-                    time.sleep(1)  # Add a one-second break after every 5 requests
-
-        self.stock_data = {
-            ticker: data for ticker, data in results
-            if data is not None
-        }
+    def load_stock_data(self) -> None:
+        """Load stock data for all tickers."""
+        for idx, ticker in enumerate(tqdm(self.tickers, desc="Loading stock data"), start=1):
+            stock_data = self._process_ticker(ticker)
+            if stock_data:
+                self.stock_data[ticker] = stock_data
+           #add a sleep to avoid rate limiting use ratelimiting.py to see how many requests you can make
+            if idx % yfinanceratelimiting() == 0:
+                time.sleep(1)
 
     def get_most_traded_stocks(self, n: int = 10) -> List[tuple[str, int]]:
-        """
-        Get the n most traded stocks by volume.
+        """Get the n most traded stocks by volume."""
+        # Load the stock data
+        self.load_stock_data()
 
-        Args:
-            n (int): Number of stocks to return
-
-        Returns:
-            List[tuple[str, int]]: List of tuples containing (ticker, volume)
-        """
-        # Sort stocks by volume
+        # Sort and retrieve the top `n` stocks by volume
         sorted_stocks = sorted(
             self.stock_data.items(),
-            key=lambda x: x[1].volume if x[1] is not None else 0,
+            key=lambda item: item[1].volume if item[1] else 0,
             reverse=True
         )
+        # Return the top n tickers with their volumes
+        return [(ticker, stock.volume) for ticker, stock in sorted_stocks[:n]]
 
-        # Return top n stocks
-        return [(ticker, stock.volume)
-                for ticker, stock in sorted_stocks[:n]
-                if stock is not None]
-def main():
-    csv_file = 'stock_info.csv'
-    analyzer = StockAnalyzer(csv_file)
-    analyzer.load_stock_data()
-    most_traded_stocks = analyzer.get_most_traded_stocks(10)
-    for ticker, volume in most_traded_stocks:
-        print(f"{ticker}: {volume}")
+    def _update_trending_json(self) -> None:
+        """Update the trending_stocks.json file."""
+        trending_data = self.get_most_traded_stocks(10)
+        try:
+            with open('trending_stocks.json', 'r') as file:
+                existing_data = json.load(file)
+            last_updated = datetime.strptime(existing_data.get("timestamp", ""), "%Y-%m-%d %H:%M:%S")
+            if datetime.now() - last_updated < timedelta(hours=3):
+                return
+        except (FileNotFoundError, KeyError, json.JSONDecodeError):
+            pass
+        with open('trending_stocks.json', 'w') as file:
+            json.dump({"timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "data": trending_data}, file, indent=4)
 
 if __name__ == "__main__":
-    main()
+    analyzer = StockAnalyzer()
+    analyzer._update_trending_json()

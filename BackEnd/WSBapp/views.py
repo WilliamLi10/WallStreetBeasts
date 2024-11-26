@@ -20,25 +20,30 @@ from django.contrib.auth.hashers import make_password, check_password
 import os
 from pathlib import Path
 from .news import get_news
+from datetime import datetime
 
 # Create your views here.
+
 @api_view(['GET'])
 def landing_page(request):
     news = get_news()
-    if news is None:
-        client = MongoClient('localhost', 27017)
-        database = client['wsbdb']
-        collection = database['news-backup']
-        news = collection.find_one()
-        client.close()
-    else:
-        client = MongoClient('localhost', 27017)
-        database = client['wsbdb']
-        collection = database['news-backup']
-        collection.replace_one({}, news, upsert=True)
-        client.close()
+    client = MongoClient('localhost', 27017)
+    database = client['wsbdb']
+    collection = database['news-backup']
 
-    return Response({'news':news}, status=status.HTTP_200_OK)
+    if news is None:
+        news = collection.find_one()['news']
+    else:
+        collection.delete_many({})
+        collection.insert_one({'news': news, 'date': datetime.now().strftime("%Y%m%d")})
+    client.close()
+
+    trending_stocks = None
+    json_file_path = os.path.join(os.path.dirname(__file__), 'trending_stocks.json')
+    with open(json_file_path, 'r') as json_file:
+        trending_stocks = json.load(json_file)
+
+    return Response({'news': news, 'trending_stocks': trending_stocks}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def login_view(request):

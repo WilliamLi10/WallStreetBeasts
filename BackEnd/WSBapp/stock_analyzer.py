@@ -1,8 +1,21 @@
 from dataclasses import dataclass
 from typing import Dict, Any
+import yfinance as yf
 
-from .StockData import StockData
-
+# Industry PE ratios
+INDUSTRY_PE_RATIOS = {
+    "Technology": 25.4,
+    "Healthcare": 18.3,
+    "Consumer Discretionary": 22.1,
+    "Energy": 15.2,
+    "Financials": 14.7,
+    "Industrials": 19.5,
+    "Materials": 17.8,
+    "Real Estate": 21.6,
+    "Utilities": 16.3,
+    "Telecommunication Services": 20.2,
+    "Consumer Staples": 18.9,
+}
 
 @dataclass
 class StockFormat:
@@ -20,6 +33,7 @@ class StockFormat:
     return_on_equity: float = 0.0
     free_cash_flow: float = 0.0
     beta: float = 1.0
+    industry: str = "Unknown"
 
     @property
     def current_price(self) -> float:
@@ -30,6 +44,45 @@ class StockFormat:
             float: The current price of the stock.
         """
         return self.pe_ratio * self.eps
+
+class StockData:
+    def __init__(self, ticker: str):
+        """
+        Fetch stock data using yfinance.
+
+        Args:
+            ticker (str): The stock ticker.
+        """
+        self.ticker = ticker
+        stock_info = yf.Ticker(ticker).info
+
+        self.volume = stock_info.get('volume', 0)
+        self.avg_volume = stock_info.get('averageVolume', 0)
+        self.pe_ratio = stock_info.get('trailingPE', 0.0)
+        self.industry_pe_ratio = self._get_industry_pe_ratio(stock_info.get('industry', 'Unknown'))
+        self.target_est_1y = stock_info.get('targetMeanPrice', 0.0)
+        self.eps = stock_info.get('trailingEps', 0.0)
+        self.dividend_yield = stock_info.get('dividendYield', 0.0) * 100 if stock_info.get('dividendYield') else 0.0
+        self.debt_to_equity = stock_info.get('debtToEquity', 0.0)
+        self.current_ratio = stock_info.get('currentRatio', 0.0)
+        self.price_to_book = stock_info.get('priceToBook', 0.0)
+        self.return_on_equity = stock_info.get('returnOnEquity', 0.0) * 100 if stock_info.get('returnOnEquity') else 0.0
+        self.free_cash_flow = stock_info.get('freeCashflow', 0.0) / 1e9 if stock_info.get('freeCashflow') else 0.0
+        self.beta = stock_info.get('beta', 1.0)
+        self.industry = stock_info.get('industry', 'Unknown')
+
+    @staticmethod
+    def _get_industry_pe_ratio(industry: str) -> float:
+        """
+        Get the PE ratio for the given industry.
+
+        Args:
+            industry (str): The industry name.
+
+        Returns:
+            float: The industry PE ratio.
+        """
+        return INDUSTRY_PE_RATIOS.get(industry, 15.0)  # Default to 15 if industry is unknown
 
 class StockAnalyzer:
     @staticmethod
@@ -58,7 +111,8 @@ class StockAnalyzer:
             price_to_book=stock_data.price_to_book,
             return_on_equity=stock_data.return_on_equity,
             free_cash_flow=stock_data.free_cash_flow,
-            beta=stock_data.beta
+            beta=stock_data.beta,
+            industry=stock_data.industry
         )
         return StockAnalyzer.analyze_stock_format(stock_format)
 
@@ -75,6 +129,9 @@ class StockAnalyzer:
         """
         analysis = {}
         potential_score = 0
+
+        # Include industry information in the analysis
+        analysis['industry'] = stock.industry
 
         # Volume analysis
         volume_ratio = stock.volume / stock.avg_volume
@@ -115,7 +172,6 @@ class StockAnalyzer:
         analysis['potential_score'] = potential_score
 
         return analysis
-
     @staticmethod
     def _categorize_volume(ratio: float) -> str:
         """
@@ -336,3 +392,6 @@ class StockAnalyzer:
         elif score <= -2:
             return 'Sell'
         return 'Hold'
+# Example usage :
+# analysis_result = StockAnalyzer.analyze_stock('AAPL')
+# print(analysis_result)
