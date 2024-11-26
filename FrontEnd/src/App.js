@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import PortfolioPage from "./pages/PortfolioPage";
 import Signup from "./pages/Signup";
 import Error from "./components/Error";
+import NewsPage from "./pages/NewsPage"; // Import the NewsPage component
 import "tailwindcss/tailwind.css";
 
 const router = createBrowserRouter([
@@ -29,7 +30,11 @@ const router = createBrowserRouter([
   {
     path: "/Portfolio",
     element: <PortfolioPage />
-  }
+  },
+  {
+    path: "/news", // Add the NewsPage route
+    element: <NewsPage />,
+  },
 
 ]);
 

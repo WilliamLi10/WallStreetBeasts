@@ -4,7 +4,7 @@ const NavBar = ({RightComponent}) => {
   return (
     <nav className="container mx-auto flex justify-between items-center">
       <div className="space-x-8">
-        <a href="#" className="text-white hover:text-gray-300 transition">
+        <a href="/news" className="text-white hover:text-gray-300 transition">
           Financial News
         </a>
         <a href="/stocks" className="text-white hover:text-gray-300 transition">

@@ -1,1 +1,6 @@
 *.env
+backend_env
+backend_env2
+/BackEnd
+/BackEnd/WallStreetBeasts
+/BackEnd/WallStreetBeasts/__pycache__
