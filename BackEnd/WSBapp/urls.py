@@ -14,5 +14,6 @@ urlpatterns = [
     path('portfolio/', views.get_portfolio_view, name='get_portfolio_view'),
     path('edit_portfolio/', views.edit_portfolio_view, name='edit_portfolio_view'),
     path('reset_password/', views.reset_password_view, name='reset_password_view'),
+    path('stock_search/', views.stock_search_view, name='stock_search_view'),
 ]
 

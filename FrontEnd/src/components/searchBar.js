@@ -54,12 +54,41 @@ const SearchBar = () => {
     }
   };
 
-  const performSearch = (searchTerm) => {
+  
+
+  const performSearch = (searchTerm) => {/*
     const results = mockData.filter((item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.ticker.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    console.log('Search results:', results);
+    );*/
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({search_term: searchTerm})
+      // need to store login code in cookie named token
+    };
+    fetch('http://localhost:8000/wsb-api/stock_search/', requestOptions)
+      .then(response => {
+        if (response.ok) {
+          // Parse the JSON response
+          console.log("There was a response", response);
+          //return response.json();
+        } else {
+          throw new Error('Network response was not ok');
+        }    
+      })
+      .then(data => {
+        // Handle the data returned from the server
+        console.log('Post request response:', data);
+        return data
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the fetch
+        console.error('There was a problem with the fetch operation:', error);
+      });
+    //console.log('Search results:', results);
     // Handle the results as needed (e.g., display them or navigate)
   };
 
