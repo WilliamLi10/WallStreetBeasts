@@ -12,13 +12,16 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 const PortfolioPage = () => {
   const [portfolioData, setPortfolioData] = useState(null);
   const [selectedStock, setSelectedStock] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [analysisResults, setAnalysisResults] = useState(null);
 
   const [updates] = useState([
     { title: "Apple New Phone Release", description: "Apple releases new phone today..." },
@@ -26,7 +29,7 @@ const PortfolioPage = () => {
     { title: "Zuckerberg Chokes Out Musk", description: "Mark Zuckerberg wins by Sub..." },
   ]);
 
-  // Fetch portfolio data (mocked initially)
+  // Fetch portfolio data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -65,10 +68,6 @@ const PortfolioPage = () => {
           data.portfolio.map(async (item) => {
             const [symbol, quantity] = item.split(":");
             const qty = parseInt(quantity) || 0;
-
-            // Fetch stock details from an API
-            // Replace 'your_stock_api_endpoint' with your actual endpoint
-            // For now, we'll use placeholder data
 
             // Placeholder stock details
             const stockDetails = {
@@ -119,6 +118,38 @@ const PortfolioPage = () => {
 
     fetchData();
   }, [updates]);
+
+  const analyzePortfolio = async () => {
+    try {
+      // Extract tickers from the portfolio
+      const tickers = portfolio.map((stock) => stock.name);
+
+      // Prepare the request payload
+      const requestData = {
+        tickers: tickers,
+      };
+
+      // Make the API call to fetch stock data
+      const response = await axios.post("http://localhost:8000/wsb-api/stocks/", requestData);
+
+      // Parse the response data
+      let data = response.data;
+
+      // If data is a string, parse it
+      if (typeof data === "string") {
+        data = JSON.parse(data);
+      }
+
+      // Store the analysis results
+      setAnalysisResults(data);
+
+      // Open the modal
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error analyzing portfolio:", error);
+      alert("Failed to analyze portfolio. Please try again.");
+    }
+  };
 
   if (!portfolioData) {
     return <div className="text-center py-10">Loading...</div>;
@@ -190,8 +221,35 @@ const PortfolioPage = () => {
               ))}
             </tbody>
           </table>
+          <button
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 float-right"
+            onClick={analyzePortfolio}
+          >
+            Analyze Portfolio
+          </button>
         </div>
       </main>
+
+      {/* Modal for Analysis Results */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-3/4 max-h-full overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-4">Portfolio Analysis</h2>
+            <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
+              {JSON.stringify(analysisResults, null, 2)}
+            </pre>
+            <div className="flex justify-end mt-4">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <CustomFooter />
     </div>
   );
