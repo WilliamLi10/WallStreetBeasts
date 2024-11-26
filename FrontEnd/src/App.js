@@ -1,4 +1,3 @@
-// App.js
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import StockDisplayPage from "./pages/StockDisplayPage";
@@ -16,7 +15,7 @@ const router = createBrowserRouter([
     errorElement: <Error />,
   },
   {
-    path: "/stocks",
+    path: "/stock/:ticker", // Update to dynamic route for StockDisplayPage
     element: <StockDisplayPage />,
   },
   {
@@ -24,18 +23,17 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/Signup",
+    path: "/signup",
     element: <Signup />,
   },
   {
-    path: "/Portfolio",
+    path: "/portfolio",
     element: <PortfolioPage />
   },
   {
     path: "/news", // Add the NewsPage route
     element: <NewsPage />,
   },
-
 ]);
 
 const App = () => {
