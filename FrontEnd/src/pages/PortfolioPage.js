@@ -19,126 +19,110 @@ const PortfolioPage = () => {
   const [portfolioData, setPortfolioData] = useState(null);
   const [selectedStock, setSelectedStock] = useState(null);
 
-  const [mockData] = useState({
-    chart: {
-      labels: ["January", "February", "March", "April", "May"],
-      datasets: [
-        {
-          label: "Portfolio Performance",
-          data: [10000, 15000, 12000, 18000, 20000],
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
-          borderColor: "rgba(54, 162, 235, 1)",
-          borderWidth: 2,
-        },
-      ],
-    },
-    portfolio: [
-      {
-        name: "AAPL",
-        total: "$10,000",
-        price: "$227.5/Share",
-        allocation: "27.5%",
-        chart: {
+  const [updates] = useState([
+    { title: "Apple New Phone Release", description: "Apple releases new phone today..." },
+    { title: "Amazon Drones Attack DC", description: "The supreme court was attacked..." },
+    { title: "Zuckerberg Chokes Out Musk", description: "Mark Zuckerberg wins by Sub..." },
+  ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Get the token from the cookies
+        const token = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("token="))
+          ?.split("=")[1];
+
+        if (!token) {
+          console.error("No token found in cookies");
+          return;
+        }
+
+        // Fetch the portfolio data from the backend
+        const response = await fetch("http://localhost:8000/wsb-api/portfolio/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch portfolio data");
+        }
+
+        const data = await response.json();
+        console.log("Portfolio data received:", data);
+
+        // Assuming data.portfolio is an array of strings like ["AAPL:10", "AMZN:15"]
+        // We need to process this data to get detailed information about each stock
+
+        // For each stock in the portfolio, fetch additional details
+        const portfolioDetails = await Promise.all(
+          data.portfolio.map(async (item) => {
+            const [symbol, quantity] = item.split(":");
+            const qty = parseInt(quantity) || 0;
+
+            // Fetch stock details from an API
+            // Replace 'your_stock_api_endpoint' with your actual endpoint
+            // For now, we'll use placeholder data
+
+            // Placeholder stock details
+            const stockDetails = {
+              name: symbol,
+              total: `$${(qty * 100).toFixed(2)}`, // Placeholder total value
+              price: `$100/Share`, // Placeholder price
+              allocation: "25%", // Placeholder allocation
+              chart: {
+                labels: ["January", "February", "March", "April", "May"],
+                datasets: [
+                  {
+                    label: `${symbol} Performance`,
+                    data: [100, 110, 105, 115, 120], // Placeholder data
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 2,
+                  },
+                ],
+              },
+            };
+            return stockDetails;
+          })
+        );
+
+        // Create overall portfolio chart data
+        const chartData = {
           labels: ["January", "February", "March", "April", "May"],
           datasets: [
             {
-              label: "AAPL Performance",
-              data: [120, 130, 125, 140, 150],
-              backgroundColor: "rgba(255, 99, 132, 0.2)",
-              borderColor: "rgba(255, 99, 132, 1)",
-              borderWidth: 2,
-            },
-          ],
-        },
-      },
-      {
-        name: "AMZN",
-        total: "$15,000",
-        price: "$188.7/Share",
-        allocation: "34%",
-        chart: {
-          labels: ["January", "February", "March", "April", "May"],
-          datasets: [
-            {
-              label: "AMZN Performance",
-              data: [200, 210, 220, 230, 240],
+              label: "Portfolio Performance",
+              data: [10000, 15000, 12000, 18000, 20000], // Placeholder data
               backgroundColor: "rgba(54, 162, 235, 0.2)",
               borderColor: "rgba(54, 162, 235, 1)",
               borderWidth: 2,
             },
           ],
-        },
-      },
-      {
-        name: "META",
-        total: "$10,000",
-        price: "$589.3/Share",
-        allocation: "27.5%",
-        chart: {
-          labels: ["January", "February", "March", "April", "May"],
-          datasets: [
-            {
-              label: "META Performance",
-              data: [300, 320, 310, 330, 340],
-              backgroundColor: "rgba(255, 206, 86, 0.2)",
-              borderColor: "rgba(255, 206, 86, 1)",
-              borderWidth: 2,
-            },
-          ],
-        },
-      },
-      {
-        name: "DKNG",
-        total: "$10,000",
-        price: "$227.5/Share",
-        allocation: "27.5%",
-        chart: {
-          labels: ["January", "February", "March", "April", "May"],
-          datasets: [
-            {
-              label: "DKNG Performance",
-              data: [90, 100, 95, 110, 120],
-              backgroundColor: "rgba(75, 192, 192, 0.2)",
-              borderColor: "rgba(75, 192, 192, 1)",
-              borderWidth: 2,
-            },
-          ],
-        },
-      },
-    ],
-    updates: [
-      { title: "Apple New Phone Release", description: "Apple releases new phone today..." },
-      { title: "Amazon Drones Attack DC", description: "The supreme court was attacked..." },
-      { title: "Zuckerberg Chokes Out Musk", description: "Mark Zuckerberg wins by Sub..." },
-    ],
-  });
-  
+        };
 
-  // Fetch portfolio data (mocked initially)
-  useEffect(() => {
-    // Simulate API call
-    const fetchData = async () => {
-      try {
-        // Uncomment the below code when backend is ready
-        // const response = await fetch("https://your-backend-api/portfolio");
-        // const data = await response.json();
-        // setPortfolioData(data);
-
-        // Use mock data for now
-        setPortfolioData(mockData);
+        setPortfolioData({
+          chart: chartData,
+          portfolio: portfolioDetails,
+          updates: updates, // Keep updates as mock data
+        });
       } catch (error) {
         console.error("Error fetching portfolio data:", error);
       }
     };
 
     fetchData();
-  }, [mockData]);
+  }, [updates]);
 
   if (!portfolioData) {
     return <div className="text-center py-10">Loading...</div>;
   }
 
-  const { chart, portfolio, updates } = portfolioData;
+  const { chart, portfolio } = portfolioData;
 
   return (
     <div>
