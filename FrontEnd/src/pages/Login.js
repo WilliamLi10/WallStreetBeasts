@@ -1,44 +1,37 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router';
-
+import { useNavigate } from 'react-router-dom'; // Updated import
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({email: email, password: password})
-    // need to store login code in cookie named token
-  };
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Request options:', requestOptions);
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    };
+
     fetch('http://localhost:8000/wsb-api/login/', requestOptions)
       .then(response => {
-      if (response.ok) {
-        // Parse the JSON response
-        console.log("There was a response", response);
-        return (<Redirect to='http://localhost:8000/wsb-api/portfolio/' />);
-        //return response.json();
-      } else {
-        throw new Error('Network response was not ok');
-      }    
-    })
-    .then(data => {
-      // Handle the data returned from the server
-      console.log('Post request response:', data);
-    })
-    .catch(error => {
-      // Handle any errors that occurred during the fetch
-      console.error('There was a problem with the fetch operation:', error);
-    });
-    console.log('Email:', email);
-    console.log('Password:', password);
+        if (response.ok) {
+          return response.json(); // Parse JSON response
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .then(data => {
+        // Store login token in a cookie
+        document.cookie = `token=${data.token}; path=/;`;
+
+        // Navigate to the portfolio page
+        navigate('/portfolio/');
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   };
 
   return (
