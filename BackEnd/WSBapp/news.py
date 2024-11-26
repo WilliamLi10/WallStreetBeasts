@@ -51,3 +51,4 @@ def get_news():
 
     return news
 def getstocknews(ticker):
+    pass
