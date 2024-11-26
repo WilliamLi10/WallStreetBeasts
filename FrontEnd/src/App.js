@@ -6,7 +6,10 @@ import PortfolioPage from "./pages/PortfolioPage";
 import Signup from "./pages/Signup";
 import Error from "./components/Error";
 import NewsPage from "./pages/NewsPage"; // Import the NewsPage component
+import AboutUs from "./pages/AboutUs";
+import UserSettings from "./pages/UserSettings";
 import "tailwindcss/tailwind.css";
+import ProtectedRoute from "./components/protectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -28,12 +31,20 @@ const router = createBrowserRouter([
   },
   {
     path: "/portfolio",
-    element: <PortfolioPage />
+    element:<ProtectedRoute><PortfolioPage /></ProtectedRoute> 
   },
   {
     path: "/news", // Add the NewsPage route
     element: <NewsPage />,
   },
+  {
+    path: "/aboutus", // Add the NewsPage route
+    element: <AboutUs />,
+  },
+  {
+    path: "/settings", // Add the NewsPage route
+    element: <UserSettings />,
+  }
 ]);
 
 const App = () => {

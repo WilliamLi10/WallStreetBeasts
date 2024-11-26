@@ -3,6 +3,8 @@ import NavBar from "../components/navBar";
 import CustomFooter from "../components/customFooter";
 import SearchBar from "../components/searchBar";
 import axios from "axios";
+import LogInAndSignUp from '../components/LogInAndSignUp';
+
 import "./NewsPage.css";  // Import the custom CSS for scrolling animation
 
 const NewsPage = () => {
@@ -48,7 +50,12 @@ const NewsPage = () => {
   return (
     <div>
       <header className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-600 text-white py-4">
-        <NavBar RightComponent={<SearchBar />} />
+      <NavBar RightComponent={
+          <div className="flex items-center space-x-4">
+            <SearchBar />
+            <LogInAndSignUp />
+          </div>
+        } />
       </header>
       <main className="container mx-auto px-4 py-12">
         <h1 className="text-6xl font-bold text-blue-600 mb-8">Latest News and Trending Stocks</h1>
