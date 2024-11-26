@@ -12,6 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
@@ -25,6 +26,7 @@ const PortfolioPage = () => {
     { title: "Zuckerberg Chokes Out Musk", description: "Mark Zuckerberg wins by Sub..." },
   ]);
 
+  // Fetch portfolio data (mocked initially)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -133,7 +135,13 @@ const PortfolioPage = () => {
         {/* Left Section: Chart */}
         <div className="col-span-2 bg-white shadow-md rounded-lg p-6">
           <h2 className="text-2xl font-semibold mb-4">
-            {selectedStock ? `${selectedStock.name} Performance` : "Portfolio Performance"}
+            {selectedStock ? (
+              <Link to={`/stock/${selectedStock.name}`} className="text-blue-500 hover:underline">
+                {`${selectedStock.name} Performance`}
+              </Link>
+            ) : (
+              "Portfolio Performance"
+            )}
           </h2>
           <Line
             data={selectedStock ? selectedStock.chart : chart}
