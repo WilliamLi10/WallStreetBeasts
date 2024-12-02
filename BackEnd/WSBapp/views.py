@@ -358,7 +358,7 @@ def stock_search_view(request):
     search_term=request.data.get('search_term')
     result_list=stock_search().search(search_term)
     #return(json.dumps(result_list))
-    return(result_list)
+    return Response({'stocks':result_list}, status=200)
 
 
 def make_analyzed_stock_json(stock_data):
