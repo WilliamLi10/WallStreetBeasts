@@ -61,15 +61,13 @@ const PortfolioPage = () => {
         console.log("Portfolio data received:", data);
 
         // Assuming data.portfolio is an array of strings like ["AAPL:10", "AMZN:15"]
-        // We need to process this data to get detailed information about each stock
+        // Process this data to get detailed information about each stock
 
-        // For each stock in the portfolio, fetch additional details
         const portfolioDetails = await Promise.all(
           data.portfolio.map(async (item) => {
             const [symbol, quantity] = item.split(":");
             const qty = parseInt(quantity) || 0;
 
-            // Placeholder stock details
             const stockDetails = {
               name: symbol,
               total: `$${(qty * 100).toFixed(2)}`, // Placeholder total value
@@ -109,7 +107,7 @@ const PortfolioPage = () => {
         setPortfolioData({
           chart: chartData,
           portfolio: portfolioDetails,
-          updates: updates, // Keep updates as mock data
+          updates: updates,
         });
       } catch (error) {
         console.error("Error fetching portfolio data:", error);
@@ -121,29 +119,19 @@ const PortfolioPage = () => {
 
   const analyzePortfolio = async () => {
     try {
-      // Extract tickers from the portfolio
-      const tickers = portfolio.map((stock) => stock.name);
-
-      // Prepare the request payload
-      const requestData = {
-        tickers: tickers,
-      };
-
-      // Make the API call to fetch stock data
-      const response = await axios.post("http://localhost:8000/wsb-api/stocks/", requestData);
-
-      // Parse the response data
-      let data = response.data;
-
-      // If data is a string, parse it
-      if (typeof data === "string") {
-        data = JSON.parse(data);
+      if (!portfolioData || !portfolioData.portfolio) {
+        console.error("Portfolio data is not available");
+        return;
       }
 
-      // Store the analysis results
-      setAnalysisResults(data);
+      const tickers = portfolioData.portfolio.map((stock) => stock.name);
 
-      // Open the modal
+      const response = await axios.post("http://localhost:8000/wsb-api/analyze-portfolio/", {
+        tickers,
+      });
+
+      const data = response.data;
+      setAnalysisResults(data);
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error analyzing portfolio:", error);
@@ -231,13 +219,34 @@ const PortfolioPage = () => {
       </main>
 
       {/* Modal for Analysis Results */}
-      {isModalOpen && (
+      {isModalOpen && analysisResults && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 w-3/4 max-h-full overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4">Portfolio Analysis</h2>
-            <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
-              {JSON.stringify(analysisResults, null, 2)}
-            </pre>
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-lg">Overall Growth</h3>
+                <p className="text-gray-700">{analysisResults.overallGrowth}</p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">Top Performers</h3>
+                <ul className="list-disc list-inside text-gray-700">
+                  {analysisResults.topPerformers.map((stock, index) => (
+                    <li key={index}>{`${stock.name}: ${stock.growth}`}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">Recommendations</h3>
+                <ul className="list-disc list-inside text-gray-700">
+                  {analysisResults.recommendations.map((rec, index) => (
+                    <li key={index}>
+                      {`${rec.action} ${rec.stock} - ${rec.reason}`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
             <div className="flex justify-end mt-4">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
