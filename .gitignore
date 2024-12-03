@@ -4,4 +4,10 @@ backend_env2
 /BackEnd
 /BackEnd/WallStreetBeasts
 /BackEnd/WallStreetBeasts/__pycache__
+BackEnd/WallStreetBeasts/__pycache__/__init__.cpython-311.pyc
+BackEnd/WallStreetBeasts/__pycache__/settings.cpython-311.pyc
+BackEnd/WallStreetBeasts/__pycache__/urls.cpython-311.pyc
+BackEnd/WSBapp/__pycache__/__init__.cpython-311.pyc
+BackEnd/WSBapp/__pycache__/apps.cpython-311.pyc
 venv/
+

@@ -117,6 +117,39 @@ const PortfolioPage = () => {
     fetchData();
   }, [updates]);
 
+  // Function to remove stock from portfolio
+  const removeStockFromPortfolio = async (stock) => {
+    const token = document.cookie.split("; ").find((row) => row.startsWith("token="))?.split("=")[1];
+    if (!token) {
+      alert("You must be logged in to perform this action.");
+      return;
+    }
+    console.log(stock.name)
+    try {
+      // Send the request to remove the stock
+      const response = await axios.post("http://localhost:8000/wsb-api/edit_portfolio/", {
+        token,
+        add: [],
+        remove: [`${stock.name}`] // Dynamically passing the stock ticker to remove
+        
+      });
+  
+      alert(response.data.message); // Show success message from API
+      // Update the portfolio data locally by filtering out the removed stock
+      setPortfolioData((prevState) => {
+        const updatedPortfolio = prevState.portfolio.filter(
+          (item) => item.name !== stock.name
+        );
+        return { ...prevState, portfolio: updatedPortfolio };
+      });
+  
+    } catch (error) {
+      console.error("Error removing stock from portfolio:", error);
+      alert("Failed to remove stock from portfolio. Please try again.");
+    }
+  };
+  
+
   const analyzePortfolio = async () => {
     try {
       if (!portfolioData || !portfolioData.portfolio) {
@@ -192,29 +225,28 @@ const PortfolioPage = () => {
                 <th className="py-2">Total</th>
                 <th className="py-2">Price</th>
                 <th className="py-2">Allocation</th>
+                <th className="py-2">Action</th>
               </tr>
             </thead>
             <tbody>
               {portfolio.map((stock, index) => (
-                <tr
-                  key={index}
-                  className={`cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : ""}`}
-                  onClick={() => setSelectedStock(stock)}
-                >
+                <tr key={index} className="border-b hover:bg-gray-100">
                   <td className="py-2">{stock.name}</td>
-                  <td className="py-2">{stock.total || "N/A"}</td>
-                  <td className="py-2">{stock.price || "N/A"}</td>
-                  <td className="py-2">{stock.allocation || "N/A"}</td>
+                  <td className="py-2">{stock.total}</td>
+                  <td className="py-2">{stock.price}</td>
+                  <td className="py-2">{stock.allocation}</td>
+                  <td className="py-2">
+                    <button
+                      onClick={() => removeStockFromPortfolio(stock)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 float-right"
-            onClick={analyzePortfolio}
-          >
-            Analyze Portfolio
-          </button>
         </div>
       </main>
 

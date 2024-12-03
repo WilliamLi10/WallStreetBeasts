@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import LogInAndSignUp from '../components/LogInAndSignUp';
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -136,7 +137,12 @@ const StockDisplayPage = () => {
   return (
     <div>
       <header className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-600 text-white py-4">
-        <NavBar RightComponent={<SearchBar />} />
+      <NavBar RightComponent={
+          <div className="flex items-center space-x-4">
+            <SearchBar />
+            <LogInAndSignUp />
+          </div>
+        } />
       </header>
       <main className="container mx-auto px-4 py-12 flex flex-col lg:flex-row gap-12">
         {/* Left Section: Company Info and Chart */}
