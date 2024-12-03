@@ -1,0 +1,75 @@
+/* Ensure that the stock container is wide enough to fit 3 stock items side by side */
+.stock-container {
+    display: flex;
+    width: 300%; /* To fit 3 stock items at once (100% width per stock) */
+    animation: scrollStocks 30s linear infinite;  /* Slow down the scroll by increasing time */
+}
+
+/* Paused state to stop the animation */
+.stock-container.paused {
+    animation-play-state: paused;
+}
+
+/* Keyframe animation for continuous left-to-right scrolling of stock names */
+@keyframes scrollStocks {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%); /* Move 1 full stock item to the left */
+    }
+}
+
+/* Optional: Make sure each stock item is displayed properly */
+.stock-container .stock-item {
+    flex-shrink: 0;  /* Prevent items from shrinking */
+    width: 33.33%;    /* Each stock should take up 1/3 of the container width (to fit 3 items at once) */
+    margin-right: 2rem; /* Space between items */
+    padding: 1rem;
+    background-color: #4f8a8b;  /* Add a background color for contrast */
+    border-radius: 8px; /* Add rounded corners */
+}
+
+/* Additional styling for the stock items */
+.stock-item span {
+    display: block;
+    color: #fff;
+}
+
+.stock-item span:first-child {
+    font-size: 1.25rem;  /* Larger font for the stock symbol */
+}
+
+.stock-item span:last-child {
+    font-size: 1rem;  /* Smaller font for volume */
+    color: #d3d3d3;  /* Lighter color for volume text */
+}
+
+/* News container styling */
+.news-container {
+    display: flex;
+    width: 300%;  /* To fit 3 articles at once (100% width per article) */
+    animation: scrollNews 30s linear infinite;
+}
+
+/* Paused state to stop the animation */
+.news-container.paused {
+    animation-play-state: paused;
+}
+
+/* Keyframe animation for continuous left-to-right scrolling of news articles */
+@keyframes scrollNews {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.news-container .w-full {
+    flex-shrink: 0;
+    width: 30%;
+    margin-right: 2rem;
+    padding: 1rem;
+}
