@@ -1,2 +1,17 @@
 *.env
+<<<<<<< HEAD
 *.pyc
+=======
+backend_env
+backend_env2
+/BackEnd
+/BackEnd/WallStreetBeasts
+/BackEnd/WallStreetBeasts/__pycache__
+BackEnd/WallStreetBeasts/__pycache__/__init__.cpython-311.pyc
+BackEnd/WallStreetBeasts/__pycache__/settings.cpython-311.pyc
+BackEnd/WallStreetBeasts/__pycache__/urls.cpython-311.pyc
+BackEnd/WSBapp/__pycache__/__init__.cpython-311.pyc
+BackEnd/WSBapp/__pycache__/apps.cpython-311.pyc
+venv/
+
+>>>>>>> da8be161504a67ebf7a9935cd17a34061940c251
